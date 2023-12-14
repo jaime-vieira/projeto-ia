@@ -1,8 +1,8 @@
 ;;; Ficheiro: puzzle.lisp
 ;;;
-;;; Descrição: Implementação da resolução do problema
+;;; DescriÃ§Ã£o: ImplementaÃ§Ã£o da resoluÃ§Ã£o do problema
 ;;;
-;;; Autores: Francisco Vaz Nº 202100217, Jaime Vieira Nº 202100108
+;;; Autores: Francisco Vaz NÂº 202100217, Jaime Vieira NÂº 202100108
 
 
 
@@ -25,7 +25,7 @@
 )
 
 (defun tabuleiro-jogado ()
-"Tabuleiro de teste igual ao anterior mas tendo sido colocado o cavalo na posição: i=0 e j=0"
+"Tabuleiro de teste igual ao anterior mas tendo sido colocado o cavalo na posiÃ§Ã£o: i=0 e j=0"
   '(
     (T 25 54 89 21 8 36 14 41 96) 
     (78 47 56 23 5 49 13 12 26 60) 
@@ -68,7 +68,7 @@
 )
 
 #|
------------------------------------------------ FUNÇÕES AUXILIARES ------------------------------------------------------------
+----------------------------------------------- FUNÃ‡Ã•ES AUXILIARES ------------------------------------------------------------
 |# 
 
 (defun remover-se (predicado lista)
@@ -97,7 +97,7 @@
 
 
 (defun substituir-posicao (indice lista &optional (valor NIL))
-  (cond ((< indice 0) lista)  ;;índice negativo -> lista original
+  (cond ((< indice 0) lista)  ;;Ã­ndice negativo -> lista original
         ((null lista) lista)  ;;lista vazia -> lista original
         ((= indice 0) (cons (cond (valor valor) (t 'NIL)) (cdr lista))) ;;substituir valor no indice 0
         (t (cons (car lista) (substituir-posicao (- indice 1) (cdr lista) valor)))
@@ -195,12 +195,12 @@
          (j (posicao-coluna posicao)))
     (cond ((and (cavalo-no-tabuleiro-p tabuleiro) (movimento-valido-p (+ i 2) (+ j 1) tabuleiro)
                 )
-           (let* ((novo-tabuleiro (substituir i j tabuleiro NIL))  ; Remover cavalo da posição atual
+           (let* ((novo-tabuleiro (substituir i j tabuleiro NIL))  ; Remover cavalo da posiÃ§Ã£o atual
                   (novo-i (+ i 2))
                   (novo-j (+ j c)))
              (cond ((movimento-valido-p novo-i novo-j tabuleiro)
-                    (substituir novo-i novo-j novo-tabuleiro T))  ; Colocar cavalo na nova posição
-                   (t (substituir i j novo-tabuleiro T)))))  ; Colocar cavalo de volta na posição original se nova posição inválida
+                    (substituir novo-i novo-j novo-tabuleiro T))  ; Colocar cavalo na nova posiÃ§Ã£o
+                   (t (substituir i j novo-tabuleiro T)))))  ; Colocar cavalo de volta na posiÃ§Ã£o original se nova posiÃ§Ã£o invÃ¡lida
           (t tabuleiro))
     )
   )
@@ -225,17 +225,17 @@
          (salto-i (posicao-linha salto))
          (salto-j (posicao-coluna salto)))
     (cond ((and (cavalo-no-tabuleiro-p tabuleiro) (movimento-valido-p (+ i salto-i) (+ j salto-j) tabuleiro))
-           (let* ((novo-tabuleiro (substituir i j tabuleiro NIL))  ; Remover cavalo da posição atual
+           (let* ((novo-tabuleiro (substituir i j tabuleiro NIL))  ; Remover cavalo da posiÃ§Ã£o atual
                   (novo-i (+ i salto-i))
                   (novo-j (+ j salto-j)))
              (cond ((movimento-valido-p novo-i novo-j tabuleiro)
                     (list (criar-estado (substituir novo-i novo-j novo-tabuleiro T) 
                   (+ pontos-atuais (celula novo-i novo-j tabuleiro)))))
-                   (t (list estado)))))) ; Se a nova posição for inválida, retorna o estado original
+                   (t (list estado)))))) ; Se a nova posiÃ§Ã£o for invÃ¡lida, retorna o estado original
           (t (list estado))))
 
 #|
-----------------------------------------------------REPRESENTAÇÃO DE ESTADOS-------------------------------------------------------
+----------------------------------------------------REPRESENTAÃ‡ÃƒO DE ESTADOS-------------------------------------------------------
 |# 
 
 ;; cria no
@@ -250,7 +250,7 @@
 (defun no-pontos (no)
   (third no))
 
-;; vai buscar a profundidade 
+;; vai buscar a profundidade
 (defun no-profundidade (no)
   (fourth no))
 
