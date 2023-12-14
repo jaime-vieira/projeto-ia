@@ -189,14 +189,13 @@
 
 
 (defun criar-estado (pontos tabuleiro)
-  (list pontos tabuleiro))
+  (cons pontos tabuleiro))
 
 (defun tabuleiro-do-estado (estado)
   (cdr estado))
 
 (defun pontos-do-estado (estado)
-  (car estado))
-
+  (car  estado))
 
 
 (defun operador (estado salto)
@@ -212,36 +211,10 @@
                   (novo-i (+ i salto-i))
                   (novo-j (+ j salto-j)))
              (cond ((movimento-valido-p novo-i novo-j tabuleiro)
-                    (list (criar-estado 
-                           (+ pontos-atuais (celula novo-i novo-j tabuleiro))
-                           (substituir novo-i novo-j novo-tabuleiro T) )))
-                   (t (list estado)))))) ; Se a nova posição for inválida, retorna o estado original
-    (t (list estado))))
+                    (criar-estado 
+                     (+ pontos-atuais (celula novo-i novo-j tabuleiro))
+                     (substituir novo-i novo-j novo-tabuleiro T) ))
+                   (t (list estado))))) ; Se a nova posição for inválida, retorna o estado original
+          (t (list estado)))))
 
-#|
-----------------------------------------------------REPRESENTAÇÃO DE ESTADOS-------------------------------------------------------
-|# 
 
-;; cria no
-(defun cria-no (tabuleiro pontos profundidade pai &optional (heuristica 0))                           
-  (list tabuleiro pontos profundidade pai heuristica))
-
-;; vai buscar o estado do tabuleiro 
-(defun no-estado-tabuleiro (no)
-  (first no))
-
-;; vai buscar os pontos 
-(defun no-pontos (no)
-  (third no))
-
-;; vai buscar a profundidade 
-(defun no-profundidade (no)
-  (fourth no))
-
-;; vai buscar o no pai
-(defun no-pai (no)
-  (fifth no))
-
-;; vai buscar a heuristica
-(defun no-Heuristica (no)
-  (sixth no))
