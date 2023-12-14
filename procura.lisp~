@@ -1,46 +1,14 @@
 ;;; Ficheiro: procura.lisp
 ;;;
-;;; DescriÃ§Ã£o: ImplementaÃ§Ã£o dos algoritmos de procura BFS, DFS e A*
+;;; Descrição: Implementação dos algoritmos de procura BFS, DFS e A*
 ;;;
-;;; Autores: Francisco Vaz NÂº 202100217, Jaime Vieira NÂº 202100108
-
-
-
-#|
-----------------------------------------------------REPRESENTAÃ‡ÃƒO DE ESTADOS-------------------------------------------------------
-|# 
-
-;; cria no
-(defun cria-no (tabuleiro pontos profundidade pai &optional (heuristica 0))                           
-  (list tabuleiro pontos profundidade pai heuristica))
-
-;; vai buscar o estado do tabuleiro 
-(defun no-estado-tabuleiro (no)
-  (first no))
-
-;; vai buscar os pontos 
-(defun no-pontos (no)
-  (third no))
-
-;; vai buscar a profundidade 
-(defun no-profundidade (no)
-  (fourth no))
-
-;; vai buscar o no pai
-(defun no-pai (no)
-  (fifth no))
-
-;; vai buscar a heuristica
-(defun no-Heuristica (no)
-  (sixth no))
-
-
-
-
+;;; Autores: Francisco Vaz Nº 202100217, Jaime Vieira Nº 202100108
 
 #|
 ----------------------------------------------- Algoritmos ------------------------------------------------------------
 |# 
+
+
 
 
 (defun no-existep (no lista)
@@ -75,7 +43,7 @@
   (append sucessores abertos))
 
 (defun dfs (no profundidade &optional (abertos (list no)) (fechados nil))
-  "Se profundidade do NÃ³ chegar Ã  profundidade fornecida, retorna-se o estado atual do nÃ³ independente do objetivo"
+  "Se profundidade do Nó chegar à profundidade fornecida, retorna-se o estado atual do nó independente do objetivo"
   (cond 
     ((= (no-profundidade no) profundidade) (list no (+ (length abertos) (length fechados)) (length fechados)))
     ((no-solucaop no 'dfs) (list no (+ (length abertos) (length fechados)) (length fechados)))
@@ -174,8 +142,8 @@
 
 
 (defun h (node goal)
-  ;; FunÃ§Ã£o heurÃ­stica
-  ;; Retorna o custo estimado do nÃ³ ao objetivo
+  ;; Função heurística
+  ;; Retorna o custo estimado do nó ao objetivo
   ...)
 
 (defun a-star (node g h-cost limit)
@@ -191,7 +159,7 @@
     f))
 
 (defun ida-star (start goal)
-  ;; FunÃ§Ã£o principal para IDA*
+  ;; Função principal para IDA*
   (let ((limit (h start goal)))
     (loop until (equal (a-star start 0 #'h limit) 'found)
           do (setq limit (+ limit 1)))))
