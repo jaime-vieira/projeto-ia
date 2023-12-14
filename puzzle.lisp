@@ -8,7 +8,7 @@
 
 
 ;;; Tabuleiros
-(defun tabuleiro-teste ()
+(defun tabuleiro_teste ()
 "Tabuleiro de teste sem nenhuma jogada realizada"
   '(
     (94 25 54 89 21 8 36 14 41 96) 
@@ -24,7 +24,7 @@
     )
 )
 
-(defun tabuleiro-jogado ()
+(defun tabuleiro_jogado ()
 "Tabuleiro de teste igual ao anterior mas tendo sido colocado o cavalo na posição: i=0 e j=0"
   '(
     (T 25 54 89 21 8 36 14 41 96) 
@@ -53,17 +53,17 @@
   (nth i2 (linha i1 tabuleiro))
 )
 
-(defun posicao-linha (posicao)
+(defun posicao_linha (posicao)
   (car posicao)
 )
 
-(defun posicao-coluna (posicao)
+(defun posicao_coluna (posicao)
   (cadr posicao)
 )
 
-(defun lista-numeros (&optional (n 100))
+(defun lista_numeros (&optional (n 100))
   (cond ((<= n 0) '())
-        (t (cons (- n 1) (lista-numeros (- n 1))))
+        (t (cons (- n 1) (lista_numeros (- n 1))))
   )
 )
 
@@ -71,10 +71,10 @@
 ----------------------------------------------- FUNÇÕES AUXILIARES ------------------------------------------------------------
 |# 
 
-(defun remover-se (predicado lista)
+(defun remover (predicado lista)
   (cond ((null lista) nil)
-        ((funcall predicado (car lista)) (remover-se predicado (cdr lista)))
-        (t (cons (car lista) (remover-se predicado (cdr lista))))
+        ((funcall predicado (car lista)) (remover predicado (cdr lista)))
+        (t (cons (car lista) (remover predicado (cdr lista))))
   )
 )
 
@@ -82,46 +82,54 @@
   (cond ((null lista) nil)
         (t (let* ((indice (random (length lista)))
                   (elemento (nth indice lista)))
-             (cons elemento (baralhar (remover-se #'(lambda (x) (equal x elemento)) lista))))
+             (cons elemento (baralhar (remover #'(lambda (x) (equal x elemento)) lista))))
         )
   )
 )
 
-(defun tabuleiro-aleatorio (&optional (lista (baralhar (lista-numeros))) (n 10))
+(defun tabuleiro_aleatorio (&optional (lista (baralhar (lista_numeros))) (n 10))
  (cond
  ((null lista) nil)
- (t (cons (subseq lista 0 n) (tabuleiro-aleatorio (subseq lista n) n)))
+ (t (cons (subseq lista 0 n) (tabuleiro_aleatorio (subseq lista n) n)))
  )
 )
 
 
 
-(defun substituir-posicao (indice lista &optional (valor NIL))
+(defun substituir_posicao (indice lista &optional (valor NIL))
   (cond ((< indice 0) lista)  ;;índice negativo -> lista original
         ((null lista) lista)  ;;lista vazia -> lista original
         ((= indice 0) (cons (cond (valor valor) (t 'NIL)) (cdr lista))) ;;substituir valor no indice 0
-        (t (cons (car lista) (substituir-posicao (- indice 1) (cdr lista) valor)))
+        (t (cons (car lista) (substituir_posicao (- indice 1) (cdr lista) valor)))
   )
 )
 
 (defun substituir (indice1 indice2 tabuleiro &optional (valor NIL))
-  (substituir-posicao indice1 tabuleiro
-                      (substituir-posicao indice2 (nth indice1 tabuleiro) valor))
+  (substituir_posicao indice1 tabuleiro
+                      (substituir_posicao indice2 (nth indice1 tabuleiro) valor))
 )
 
 
-(defun posicao-cavalo-rec (tabuleiro i j)
+(defun posicao_cavalo_rec (tabuleiro i j)
   (cond ((>= i (length tabuleiro)) nil)  
         ((>= j (length (nth i tabuleiro)))  
-         (posicao-cavalo-rec tabuleiro (+ i 1) 0))
+         (posicao_cavalo_rec tabuleiro (+ i 1) 0))
         ((eq (celula i j tabuleiro) 'T)  
          (list i j))
-        (t (posicao-cavalo-rec tabuleiro i (+ j 1)))
+        (t (posicao_cavalo_rec tabuleiro i (+ j 1)))
   )
 )  
 
-(defun posicao-cavalo (tabuleiro)
-  (posicao-cavalo-rec tabuleiro 0 0))
+(defun posicao_cavalo (tabuleiro)
+  (posicao_cavalo_rec tabuleiro 0 0))
+
+
+(defun salto_valido (salto)
+  (let ((horizontal (abs (first salto)))
+        (vertical (abs (second salto))))
+    (and (or (= horizontal 1) (= horizontal 2))
+         (or (= vertical 1) (= vertical 2))
+         (not (= horizontal vertical))))) 
 
 
 #|
@@ -135,7 +143,7 @@
 )
 
 
-(defun movimento-valido-p (i j tabuleiro)
+(defun movimento_valido (i j tabuleiro)
   (let ((nlinhas (length tabuleiro))
         (ncolunas (length (car tabuleiro))))
     (and (>= i 0) (< i nlinhas)
@@ -145,18 +153,18 @@
     )
   )
 
-(defun cavalo-no-tabuleiro-p (tabuleiro)
-  (cond ((eq (posicao-cavalo tabuleiro) 'NIL) NIL)
+(defun cavalo_no_tabuleiro (tabuleiro)
+  (cond ((eq (posicao_cavalo tabuleiro) 'NIL) NIL)
         (t T)
    )
 )
 
-(defun colocar-cavalo(i j tabuleiro)
+(defun colocar_cavalo(i j tabuleiro)
   (substituir i j tabuleiro T)
 )
 
 
-(defun regra-duplo (numero)
+(defun regra_duplo (numero)
   (cond
    ((not (numberp numero)) nil)
    ((= numero 0) nil)
@@ -165,18 +173,18 @@
    )
 )
 
-(defun lista-duplos (tabuleiro)
+(defun lista_duplos (tabuleiro)
   (cond 
    ((null tabuleiro) '())
    ((listp (car tabuleiro)) 
-    (append (lista-duplos (car tabuleiro)) (lista-duplos (cdr tabuleiro))))
+    (append (lista_duplos (car tabuleiro)) (lista_duplos (cdr tabuleiro))))
    ((regra-duplo (car tabuleiro)) 
-    (cons (car tabuleiro) (lista-duplos (cdr tabuleiro))))
-   (t (lista-duplos (cdr tabuleiro)))
+    (cons (car tabuleiro) (lista_duplos (cdr tabuleiro))))
+   (t (lista_duplos (cdr tabuleiro)))
    )
  )
 
-(defun posicoes-duplos (tabuleiro)
+(defun posicoes_duplos (tabuleiro)
   (labels ((posicao-duplo-rec (tabuleiro i j contador)
              (cond ((>= i (length tabuleiro)) contador)
                    ((>= j (length (nth i tabuleiro)))
@@ -187,52 +195,23 @@
     (posicao-duplo-rec tabuleiro 0 0 '()))
 )
 
- 
 
-(defun operador-1 (tabuleiro)
-  (let* ((posicao (posicao-cavalo tabuleiro))
-         (i (posicao-linha posicao))
-         (j (posicao-coluna posicao)))
-    (cond ((and (cavalo-no-tabuleiro-p tabuleiro) (movimento-valido-p (+ i 2) (+ j 1) tabuleiro)
-                )
+
+(defun operador (tabuleiro salto)
+  (let* ((posicao (posicao_cavalo tabuleiro))
+         (i (posicao_linha posicao))
+         (j (posicao_coluna posicao)))
+    (cond ((and (cavalo_no_tabuleiro tabuleiro) (movimento_valido (+ i (posicao_linha salto)) (+ j (posicao_coluna salto)) tabuleiro) (salto_valido salto))
            (let* ((novo-tabuleiro (substituir i j tabuleiro NIL))  ; Remover cavalo da posição atual
-                  (novo-i (+ i 2))
-                  (novo-j (+ j c)))
-             (cond ((movimento-valido-p novo-i novo-j tabuleiro)
+                  (novo-i (+ i (posicao_linha salto)))
+                  (novo-j (+ j (posicao_coluna salto))))
+             (cond ((movimento_valido novo-i novo-j tabuleiro)
                     (substituir novo-i novo-j novo-tabuleiro T))  ; Colocar cavalo na nova posição
                    (t (substituir i j novo-tabuleiro T)))))  ; Colocar cavalo de volta na posição original se nova posição inválida
           (t tabuleiro))
     )
-  )
+)
 
-(defun criar-estado (pontos tabuleiro)
-  (list pontos tabuleiro))
-
-(defun tabuleiro-do-estado (estado)
-  (car estado))
-
-(defun pontos-do-estado (estado)
-  (cdr estado))
-
-;; Tentativa de generalizar o operador 
-
-(defun operador (estado salto)
-  (let* ((tabuleiro (tabuleiro-do-estado estado))
-         (pontos-atuais (pontos-do-estado estado))
-         (posicao (posicao-cavalo tabuleiro))
-         (i (posicao-linha posicao))
-         (j (posicao-coluna posicao))
-         (salto-i (posicao-linha salto))
-         (salto-j (posicao-coluna salto)))
-    (cond ((and (cavalo-no-tabuleiro-p tabuleiro) (movimento-valido-p (+ i salto-i) (+ j salto-j) tabuleiro))
-           (let* ((novo-tabuleiro (substituir i j tabuleiro NIL))  ; Remover cavalo da posição atual
-                  (novo-i (+ i salto-i))
-                  (novo-j (+ j salto-j)))
-             (cond ((movimento-valido-p novo-i novo-j tabuleiro)
-                    (list (criar-estado (substituir novo-i novo-j novo-tabuleiro T) 
-                  (+ pontos-atuais (celula novo-i novo-j tabuleiro)))))
-                   (t (list estado)))))) ; Se a nova posição for inválida, retorna o estado original
-          (t (list estado))))
 
 #|
 ----------------------------------------------------REPRESENTAÇÃO DE ESTADOS-------------------------------------------------------
@@ -243,21 +222,22 @@
   (list tabuleiro pontos profundidade pai heuristica))
 
 ;; vai buscar o estado do tabuleiro 
-(defun no-estado-tabuleiro (no)
+(defun no_estado_tabuleiro (no)
   (first no))
 
 ;; vai buscar os pontos 
-(defun no-pontos (no)
-  (third no))
+(defun no_pontos (no)
+  (second no))
 
 ;; vai buscar a profundidade 
-(defun no-profundidade (no)
-  (fourth no))
+(defun no_profundidade (no)
+  (third no))
 
 ;; vai buscar o no pai
 (defun no-pai (no)
-  (fifth no))
+  (fourth no))
 
 ;; vai buscar a heuristica
 (defun no-Heuristica (no)
-  (sixth no))
+  (fifth no))
+
