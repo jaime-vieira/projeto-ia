@@ -127,96 +127,39 @@
 
 
 
+
 #|
-  ________________SMA*_________________
+----------------------------------------------- SMA* ------------------------------------------------------------
 |# 
-;;(set-max-nos 4)
-(let ((memoria))
-"CLOSER para definir memoria"
-(defun set-max-nos  (max)
-  (setf memoria max)
-)
 
-(defun SMA-STAR (abertos sucessores)
-" SMA* devolve a lista de abertos com os novos sucessores ordenados pelo custo exatamente como o A* "
-"Remove o numero de nos do fim da lista que sejam igual ou superior á memoria definida"
-  (let ((open (sort (append sucessores (cdr abertos)) #'< :key #'no-custo)))
-    (cond
-      ((>= (length open) memoria) (SMA-STAR-REMOVE open (- (length open) memoria))) 
-      (T open)
-    )
-  )
-)
-
-(defun SMA-STAR-REMOVE (lista n &optional (tamanho (length lista)))
-"Retorna a lista com os elemntos removidos no fim da lista"
-  (cond
-    ((null lista) nil)
-    ((= n tamanho) nil)
-    (T (cons (car lista) (SMA-STAR-REMOVE (cdr lista) n (1- tamanho))))
-  )
-)
-)
-
-
-
-
-
-
-
-
-;Teste:(set-max-nos 4) (SMA* (NO-TESTE) 'H)
-(defun SMA*(no heuristica &optional (abertos (list no)) (fechados nil))
-  (cond 
-   ((no-solucaop no 'a-star) (list no (+(length abertos)(length fechados)) (length fechados)  ))
-   ((null abertos) nil)
-   (t (SMA* (car abertos) heuristica (SMA-STAR (cdr abertos) 
-                                                   (apply #'append 
-                                                          (mapcar  #'(lambda (suc) (if (or (null abertos) (no-existep suc fechados)) '() (list suc))) 
-                                                                   (sucessores (car abertos) (operadores) 'a-star heuristica )))) (cons  (car abertos) fechados)))
-   )
-  )
 
 
 
 
 #|
-  ________________IDA* INCOMPLETE_________________
+----------------------------------------------- IDA* ------------------------------------------------------------
 |# 
 
 
+(defun h (node goal)
+  ;; Função heurística
+  ;; Retorna o custo estimado do nó ao objetivo
+  ...)
 
-(defun IDA*(no heuristica &optional (abertos (list no)) (fechados nil))
-  (cond 
-   ((no-solucaop no 'a-star) (list no (+(length abertos)(length fechados)) (length fechados)  ))
-   ((null abertos) nil)
-   (t (IDA* (car abertos) heuristica (get-limiar-nodes (cdr abertos) 
-                                                   (apply #'append 
-                                                          (mapcar  #'(lambda (suc) (if (or (null abertos) (no-existep suc fechados)) '() (list suc))) 
-                                                                 (get-new-limiar  (sucessores (car abertos) (operadores) 'a-star heuristica ))))) (cons  (car abertos) fechados)))
-   )
-  )
+(defun a-star (node g h-cost limit)
+  (let ((f (+ g (h-cost node))))
+    (cond ((> f limit) f)
+          ((equal node goal) 'found)
+          (t (loop for successor in (generate-successors node)
+                   do
+                   (let ((new-g (+ g (cost node successor))))
+                     (let ((result (a-star successor new-g h-cost limit)))
+                       (cond ((equal result 'found) 'found)
+                             ((< result f) (setq f result))))))
+    f))
 
-
-(defun get-lowest-f(abertos)
-  "Retorna o no de uma lista com o valor f mais baixo"
-  (cond
-   ((= (length abertos) 1) (car abertos))
-   (T (let ((node (get-lowest-f(cdr abertos))))
-        (if (< (no-custo (car abertos)) (no-custo node))
-            (car abertos) node)))  
-   )
-  )
-
-
-;TESTE: (get-limiar-nodes  (list (no-teste)) (get-new-limiar (sucessores (no-teste) (operadores) 'a-star 'h) ))
-(defun get-limiar-nodes(abertos limiar)
-"Recebe uma lista e um dado limiar e retorna uma lista de nos cujo valor F seja <= a esse limiar"
-"f'(n)<=L"
-  (remove nil (mapcar #'(lambda(node) (if (<= (no-custo node) limiar) node NIL)) abertos)) 
-)
-
-(defun get-new-limiar(list)
-"Retorna o valo f mais baixo de uma lista de nos"
-  (no-custo (get-lowest-f list))
-)
+(defun ida-star (start goal)
+  ;; Função principal para IDA*
+  (let ((limit (h start goal)))
+    (loop until (equal (a-star start 0 #'h limit) 'found)
+          do (setq limit (+ limit 1)))))
