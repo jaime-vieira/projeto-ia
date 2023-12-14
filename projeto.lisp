@@ -8,8 +8,14 @@
 #|
 ----------------------------------------------- Diretorias ------------------------------------------------------------
 |# 
+
+
+;; C:\\Users\\PC Multimedia\\OneDrive\\Ambiente de Trabalho\\LEI\\3º ano\\1º Semestre\\IA\\projeto-ia\\ -> Diretoria Francisco
+;; D:\\Jaime\\IPS\\Curso\\2023 - 2024\\1º Semestre\\IA\\Projeto\\projeto-ia\\ -> Diretoria Jaime
+
+
 (defun path ()
-  (let ((path "C:\Users\PC Multimedia\OneDrive\Ambiente de Trabalho\LEI\3º ano\1º Semestre\IA\projeto-ia\\ "))
+  (let ((path "C:\\Users\\PC Multimedia\\OneDrive\\Ambiente de Trabalho\\LEI\\3º ano\\1º Semestre\\IA\\projeto-ia\\ "))
     path
    )
   )
