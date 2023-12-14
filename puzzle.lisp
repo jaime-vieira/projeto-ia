@@ -218,3 +218,6 @@
           (t (list estado)))))
 
 
+(defun movimentos-possiveis ()
+  '((1 2) (1 -2) (-1 2) (-1 -2)
+    (2 1) (2 -1) (-2 1) (-2 -1)))
