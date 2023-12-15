@@ -187,34 +187,16 @@
     (posicao-duplo-rec tabuleiro 0 0 '()))
 )
 
- 
-
-(defun operador-1 (tabuleiro)
-  (let* ((posicao (posicao-cavalo tabuleiro))
-         (i (posicao-linha posicao))
-         (j (posicao-coluna posicao)))
-    (cond ((and (cavalo-no-tabuleiro-p tabuleiro) (movimento-valido-p (+ i 2) (+ j 1) tabuleiro)
-                )
-           (let* ((novo-tabuleiro (substituir i j tabuleiro NIL))  ; Remover cavalo da posição atual
-                  (novo-i (+ i 2))
-                  (novo-j (+ j c)))
-             (cond ((movimento-valido-p novo-i novo-j tabuleiro)
-                    (substituir novo-i novo-j novo-tabuleiro T))  ; Colocar cavalo na nova posição
-                   (t (substituir i j novo-tabuleiro T)))))  ; Colocar cavalo de volta na posição original se nova posição inválida
-          (t tabuleiro))
-    )
-  )
 
 (defun criar-estado (pontos tabuleiro)
-  (list pontos tabuleiro))
+  (cons pontos tabuleiro))
 
 (defun tabuleiro-do-estado (estado)
-  (car estado))
-
-(defun pontos-do-estado (estado)
   (cdr estado))
 
-;; Tentativa de generalizar o operador 
+(defun pontos-do-estado (estado)
+  (car  estado))
+
 
 (defun operador (estado salto)
   (let* ((tabuleiro (tabuleiro-do-estado estado))
@@ -229,35 +211,13 @@
                   (novo-i (+ i salto-i))
                   (novo-j (+ j salto-j)))
              (cond ((movimento-valido-p novo-i novo-j tabuleiro)
-                    (list (criar-estado (substituir novo-i novo-j novo-tabuleiro T) 
-                  (+ pontos-atuais (celula novo-i novo-j tabuleiro)))))
-                   (t (list estado)))))) ; Se a nova posição for inválida, retorna o estado original
-          (t (list estado))))
+                    (criar-estado 
+                     (+ pontos-atuais (celula novo-i novo-j tabuleiro))
+                     (substituir novo-i novo-j novo-tabuleiro T) ))
+                   (t (list estado))))) ; Se a nova posição for inválida, retorna o estado original
+          (t (list estado)))))
 
-#|
-----------------------------------------------------REPRESENTAÇÃO DE ESTADOS-------------------------------------------------------
-|# 
 
-;; cria no
-(defun cria-no (tabuleiro pontos profundidade pai &optional (heuristica 0))                           
-  (list tabuleiro pontos profundidade pai heuristica))
-
-;; vai buscar o estado do tabuleiro 
-(defun no-estado-tabuleiro (no)
-  (first no))
-
-;; vai buscar os pontos 
-(defun no-pontos (no)
-  (third no))
-
-;; vai buscar a profundidade 
-(defun no-profundidade (no)
-  (fourth no))
-
-;; vai buscar o no pai
-(defun no-pai (no)
-  (fifth no))
-
-;; vai buscar a heuristica
-(defun no-Heuristica (no)
-  (sixth no))
+(defun movimentos-possiveis ()
+  '((1 2) (1 -2) (-1 2) (-1 -2)
+    (2 1) (2 -1) (-2 1) (-2 -1)))
