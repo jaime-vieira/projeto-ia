@@ -10,32 +10,37 @@
 
 
 ;; cria no
-(defun cria-no (tabuleiro pontos profundidade pai &optional (heuristica 0))                           
-  (list tabuleiro pontos profundidade pai heuristica))
+(defun cria_no (estado profundidade pai &optional (heuristica 0))                           
+  (list (tabuleiro-do-estado estado) (pontos-do-estado estado) profundidade pai heuristica))
 
 ;; vai buscar o estado do tabuleiro 
-(defun no-estado-tabuleiro (no)
+(defun estado_tabuleiro (no)
   (first no))
 
 ;; vai buscar os pontos 
-(defun no-pontos (no)
-  (third no))
+(defun pontos (no)
+  (second no))
 
 ;; vai buscar a profundidade 
-(defun no-profundidade (no)
-  (fourth no))
+(defun profundidade_no (no)
+  (third no))
 
 ;; vai buscar o no pai
-(defun no-pai (no)
-  (fifth no))
+(defun no_pai (no)
+  (fourth no))
 
 ;; vai buscar a heuristica
-(defun no-Heuristica (no)
-  (sixth no))
+(defun no_heuristica (no)
+  (fifth no))
 
-(defun no-existep (no lista)
-  (eval (cons 'or(mapcar #'(lambda(x) (and(equal (no-estado-tabuleiro no) (no-estado-tabuleiro x))(>= (no-profundidade no)(no-profundidade x))))lista))))
+(defun custo_do_no (no)
+  (+ (profundidade_no no) (no_heuristica no)))
 
+
+(defun sucessores (no abertos fechados))
+
+(defun no_existep (no lista)
+  (eval (cons 'or (mapcar #'(lambda(x) (and (equal (estado_tabuleiro no) (estado_tabuleiro x)) (>= (profundidade_no no) (profundidade_no x)))) lista))))
 
 
 
@@ -48,14 +53,14 @@
 
 (defun abertos-bfs (abertos sucessores)
   "Devolve a lista de abertos do BFS"
-  (append abertos sucessores))
+  (append sucessores abertos))
 
 (defun bfs (no funcao-objetivo sucessores operadores &optional (abertos (list no)) (fechados nil))
   (cond 
     ((null abertos) nil)
     ((funcall funcao-objetivo no 'bfs) (list no (+ (length abertos) (length fechados)) (length fechados)))
     ((member no fechados) (bfs (car abertos) funcao-objetivo sucessores operadores (abertos-bfs (cdr abertos) (funcall sucessores no operadores 'bfs nil)) fechados))
-    (t (bfs (car abertos) funcao-objetivo sucessores operadores (pushnew (funcall sucessores no operadores 'bfs nil) abertos) fechados))))
+    (t (bfs (car abertos) funcao-objetivo sucessores operadores (abertos-bfs (cdr abertos) (funcall sucessores no operadores 'bfs nil)) (pushnew no fechados)))))
 
 
 #|
@@ -165,25 +170,3 @@
 |# 
 
 
-(defun h (node goal)
-  ;; Função heurística
-  ;; Retorna o custo estimado do nó ao objetivo
-  ...)
-
-(defun a-star (node g h-cost limit)
-  (let ((f (+ g (h-cost node))))
-    (cond ((> f limit) f)
-          ((equal node goal) 'found)
-          (t (loop for successor in (generate-successors node)
-                   do
-                   (let ((new-g (+ g (cost node successor))))
-                     (let ((result (a-star successor new-g h-cost limit)))
-                       (cond ((equal result 'found) 'found)
-                             ((< result f) (setq f result))))))
-    f))
-
-(defun ida-star (start goal)
-  ;; Função principal para IDA*
-  (let ((limit (h start goal)))
-    (loop until (equal (a-star start 0 #'h limit) 'found)
-          do (setq limit (+ limit 1)))))
