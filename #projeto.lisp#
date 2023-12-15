@@ -1,23 +1,23 @@
 ;;; Ficheiro: projeto.lisp
 ;;;
-;;; Descrição: Carrega os outros ficheiros de código, escreve e lê ficheiros, e trata da interação com o utilizador
+;;; DescriÃ§Ã£o: Carrega os outros ficheiros de cÃ³digo, escreve e lÃª ficheiros, e trata da interaÃ§Ã£o com o utilizador
 ;;;
-;;; Autores: Francisco Vaz Nº 202100217, Jaime Vieira Nº 202100108
+;;; Autores: Francisco Vaz NÂº 202100217, Jaime Vieira NÂº 202100108
 
 
-;Diretórios
+;DiretÃ³rios
 
-;; C:\\Users\\PC Multimedia\\OneDrive\\Ambiente de Trabalho\\LEI\\3º ano\\1º Semestre\\IA\\projeto-ia\\ -> Diretoria Francisco
-;; D:\\Jaime\\IPS\\Curso\\2023 - 2024\\1º Semestre\\IA\\Projeto\\projeto-ia\\ -> Diretoria Jaime
+;; C:\\Users\\PC Multimedia\\OneDrive\\Ambiente de Trabalho\\LEI\\3Âº ano\\1Âº Semestre\\IA\\projeto-ia\\ -> Diretoria Francisco
+;; D:\\Jaime\\IPS\\Curso\\2023 - 2024\\1Âº Semestre\\IA\\Projeto\\projeto-ia\\ -> Diretoria Jaime
 
 (defun path ()
-  (let ((path "D:\\Jaime\\IPS\\Curso\\2023 - 2024\\1º Semestre\\IA\\Projeto\\projeto-ia\\")) path)
+  (let ((path "D:\\Jaime\\IPS\\Curso\\2023 - 2024\\1Âº Semestre\\IA\\Projeto\\projeto-ia\\")) path)
 )
 
 
 (defun path-solucao ()
-   "Caminho da solução"
-  (let ((ficheiro-path  "D:\\Jaime\\IPS\\Curso\\2023 - 2024\\1º Semestre\\IA\\Projeto\\projeto-ia\\solucao.dat")) ficheiro-path)
+   "Caminho da soluÃ§Ã£o"
+  (let ((ficheiro-path  "D:\\Jaime\\IPS\\Curso\\2023 - 2024\\1Âº Semestre\\IA\\Projeto\\projeto-ia\\solucao.dat")) ficheiro-path)
 )
 
 
@@ -37,12 +37,12 @@
   (loop
     (format t "~%1 - Iniciar Jogo")
     (format t "~%2 - Sair~%")
-    (format t "~%Escolha um número entre 1 e 2:~%")
+    (format t "~%Escolha um nÃºmero entre 1 e 2:~%")
     (let ((opcao (read)))
      (cond 
-      ((= opcao 1) (format t "~%A começar o jogo...~%") (menu_escolha_problema))
-      ((= opcao 2) (format t "~%A sair... Até à próxima!~%") (return))
-      (t (format t "~%Escolha inválida. ~%"))
+      ((= opcao 1) (format t "~%A comeÃ§ar o jogo...~%") (menu_escolha_problema))
+      ((= opcao 2) (format t "~%A sair... AtÃ© Ã  prÃ³xima!~%") (return))
+      (t (format t "~%Escolha invÃ¡lida. ~%"))
      )
     )
   )
@@ -60,10 +60,10 @@
     (format t "~%5 - Problema E")
     (format t "~%6 - Problema F")
     (format t "~%7 - Menu Inicial")
-    (format t "~%~% Escolha uma opção de 1 a 7:")
+    (format t "~%~% Escolha uma opÃ§Ã£o de 1 a 7:")
     (let ((opcao (read)))
      (cond 
-      ((not (numberp opcao)) (format t "~%Escolha inválida.~%"))
+      ((not (numberp opcao)) (format t "~%Escolha invÃ¡lida.~%"))
       ((= opcao 1) (progn (definir-objetivo 'A) (menu-escolha (problema-A) ) t))
       ((= opcao 2) (progn (definir-objetivo 'B) (menu-escolha (problema-B) ) t))
       ((= opcao 3) (progn (definir-objetivo 'C) (menu-escolha (problema-C) ) t))
@@ -71,7 +71,7 @@
       ((= opcao 5) (progn (definir-objetivo 'E) (menu-escolha (problema-E) ) t))
       ((= opcao 6) (progn (definir-objetivo 'F) (menu-escolha (problema-F) ) t))
       ((= opcao 7) (menu_inicial))
-      (t (format t "~%Escolha inválida.~%"))
+      (t (format t "~%Escolha invÃ¡lida.~%"))
      )
     )
  )
@@ -85,36 +85,36 @@
      (format t "~%1 - Ir para o algoritmo")
      (format t "~%2 - Configurar Tabuleiro")
      (format t "~%3 - Menu Inicial")
-     (format t "~%~% Escolha uma opção de 1 a 3:")
+     (format t "~%~% Escolha uma opÃ§Ã£o de 1 a 3:")
      (let ((opcao (read)))
       (cond 
-       ((not (numberp opcao)) (format t "~%Escolha inválida.~%"))
+       ((not (numberp opcao)) (format t "~%Escolha invÃ¡lida.~%"))
        ((= opcao 1) (menu-algoritmos problema))
        ((= opcao 2) (menu-configurar-tabuleiro problema))
        ((= opcao 3) (menu_inicial))
-       (t (format t "~%Escolha inválida.~%"))
+       (t (format t "~%Escolha invÃ¡lida.~%"))
       )
      )
    )
 )
 
-#| Função tá com erro
+;;FunÃ§Ã£o tÃ¡ com erro
 
-(defun menu-Configurar-tabuleiro (problema)
-  "Menu de escolha de posição"
+(defun menu_configurar-tabuleiro (problema)
+  "Menu de escolha de posiÃ§Ã£o"
   (cond
    ((equal (posicao-cavalo problema) nil )  
     (loop
        (pprint  problema)
-       (format t "~%Escolha apenas uma posição com valores da primeira")      
+       (format t "~%Escolha apenas uma posiÃ§Ã£o com valores da primeira")      
        (format t "~%linha para o cavalo(0 para Menu Inicial).")
        (format t "~%-> ")
       (let ((opcao (read)))
        (cond 
-        ((or (numberp opcao) (> opcao 10) (< opcao 0))) (format t "~%Escolha inválida.~%"))
+        ((or (numberp opcao) (> opcao 10) (< opcao 0))) (format t "~%Escolha invÃ¡lida.~%"))
         ((zerop opcao) (menu_inicial))
         ((= opcao 2) (menu-configurar-tabuleiro problema))
-        (t (format t "~%Escolha inválida.~%"))
+        (t (format t "~%Escolha invÃ¡lida.~%"))
        ))
       )
      (cond ((not (let ((escolha (read)))
@@ -128,7 +128,6 @@
             (return)))
     ))
    (T (menu-algoritmos problema)))
-|#
 
 
 
@@ -138,8 +137,7 @@
 
 
 
-
-#| Funções do bacano
+#| FunÃ§Ãµes do bacano
 
 
 (defun menu-Configurar-tabuleiro (problema)
@@ -150,17 +148,17 @@
      (pprint  problema)
      (progn
        (format t "~%           ______________________________________________________")      
-       (format t "~%          §                                                      §")
-       (format t "~%          §                   CHOOSE HORSE POSITION              §")
-       (format t "~%          §                IN THE FIRST ROW OF THE BOARD         §")            
-       (format t "~%          §                                                      §")
-       (format t "~%          §                                                      §")
-       (format t "~%          §          choose only the position with values        §")
-       (format t "~%          §            from the first row of the board           §")
-       (format t "~%          §                                                      §")
-       (format t "~%          §                                                      §")
-       (format t "~%          §                ( OR Press  -1  TO EXIT   )           §")
-       (format t "~%          § _____________________________________________________§")
+       (format t "~%          Â§                                                      Â§")
+       (format t "~%          Â§                   CHOOSE HORSE POSITION              Â§")
+       (format t "~%          Â§                IN THE FIRST ROW OF THE BOARD         Â§")            
+       (format t "~%          Â§                                                      Â§")
+       (format t "~%          Â§                                                      Â§")
+       (format t "~%          Â§          choose only the position with values        Â§")
+       (format t "~%          Â§            from the first row of the board           Â§")
+       (format t "~%          Â§                                                      Â§")
+       (format t "~%          Â§                                                      Â§")
+       (format t "~%          Â§                ( OR Press  -1  TO EXIT   )           Â§")
+       (format t "~%          Â§ _____________________________________________________Â§")
        (format t "~%~%~%          Index -> ")
        )
      (cond ((not (let ((escolha (read)))
@@ -182,17 +180,17 @@
   (loop
    (progn
      (format t "~%           ______________________________________________________")
-     (format t "~%          §                                                      §")
-     (format t "~%          §                  CHOOSE ALGORITHM                    §")
-     (format t "~%          §                (search algorithm)                    §")
-     (format t "~%          §                                                      §")
-     (format t "~%          §                 1-Algorithm BFS                      §")
-     (format t "~%          §                 2-Algorithm DFS                      §")
-     (format t "~%          §                 3-Algorithm A*                       §")
-     (format t "~%          §                 4-Algorithm SMA*                     §")
-     (format t "~%          §                 0-Home Menu                          §")
-     (format t "~%          §                                                      §")
-     (format t "~%          §______________________________________________________§") 
+     (format t "~%          Â§                                                      Â§")
+     (format t "~%          Â§                  CHOOSE ALGORITHM                    Â§")
+     (format t "~%          Â§                (search algorithm)                    Â§")
+     (format t "~%          Â§                                                      Â§")
+     (format t "~%          Â§                 1-Algorithm BFS                      Â§")
+     (format t "~%          Â§                 2-Algorithm DFS                      Â§")
+     (format t "~%          Â§                 3-Algorithm A*                       Â§")
+     (format t "~%          Â§                 4-Algorithm SMA*                     Â§")
+     (format t "~%          Â§                 0-Home Menu                          Â§")
+     (format t "~%          Â§                                                      Â§")
+     (format t "~%          Â§______________________________________________________Â§") 
      (format t "~%~%~%          Option -> ")
      )
    (cond ((not (let ((escolha (read))) 
@@ -216,16 +214,16 @@
   (loop
    (progn
      (format t "~%           ______________________________________________________")
-     (format t "~%          §                         G                            §")
-     (format t "~%          §                      (DEPTH)                         §")
-     (format t "~%          §                (Preview one Board)                   §")
-     (format t "~%          §                                                      §")
-     (format t "~%          §                     ATTENTION                        §")
-     (format t "~%          §                                                      §")
-     (format t "~%          §       Only numbers greater than Ø are allowed        §")     
-     (format t "~%          §                   0-Home Menu                        §")
-     (format t "~%          §                                                      §")
-     (format t "~%          §______________________________________________________§")
+     (format t "~%          Â§                         G                            Â§")
+     (format t "~%          Â§                      (DEPTH)                         Â§")
+     (format t "~%          Â§                (Preview one Board)                   Â§")
+     (format t "~%          Â§                                                      Â§")
+     (format t "~%          Â§                     ATTENTION                        Â§")
+     (format t "~%          Â§                                                      Â§")
+     (format t "~%          Â§       Only numbers greater than Ã˜ are allowed        Â§")     
+     (format t "~%          Â§                   0-Home Menu                        Â§")
+     (format t "~%          Â§                                                      Â§")
+     (format t "~%          Â§______________________________________________________Â§")
      (format t "~%~%~%          Depth-> ")
      )
    (cond ((not (let ((depth (read)))
@@ -265,14 +263,14 @@
 (loop
     (progn
       (format t "~%           ______________________________________________________")
-      (format t "~%          §                     MEMORY LIMIT                     §")
-      (format t "~%          §                        (SMA*)                        §")
-      (format t "~%          §                                                      §")
-      (format t "~%          §             Choose a value of memory                 §")
-      (format t "~%          §                 (Max of Nodes)                       §")    
-      (format t "~%          §                 0-Home Menu                          §")
-      (format t "~%          §                                                      §")
-      (format t "~%          §______________________________________________________§")
+      (format t "~%          Â§                     MEMORY LIMIT                     Â§")
+      (format t "~%          Â§                        (SMA*)                        Â§")
+      (format t "~%          Â§                                                      Â§")
+      (format t "~%          Â§             Choose a value of memory                 Â§")
+      (format t "~%          Â§                 (Max of Nodes)                       Â§")    
+      (format t "~%          Â§                 0-Home Menu                          Â§")
+      (format t "~%          Â§                                                      Â§")
+      (format t "~%          Â§______________________________________________________Â§")
       (format t "~%~%~%          Memory -> ")
       )
     (cond ((not (let ((memory (read)))
@@ -293,14 +291,14 @@
 (loop
     (progn
       (format t "~%           ______________________________________________________")
-      (format t "~%          §                          H                           §")
-      (format t "~%          §                     (HEURISTIC)                      §")
-      (format t "~%          §                                                      §")
-      (format t "~%          §                 1-Base (h(x)=o(x)/m(x))              §")
-      (format t "~%          §                 2-Developed                          §")    
-      (format t "~%          §                 0-Home Menu                          §")
-      (format t "~%          §                                                      §")
-      (format t "~%          §______________________________________________________§")
+      (format t "~%          Â§                          H                           Â§")
+      (format t "~%          Â§                     (HEURISTIC)                      Â§")
+      (format t "~%          Â§                                                      Â§")
+      (format t "~%          Â§                 1-Base (h(x)=o(x)/m(x))              Â§")
+      (format t "~%          Â§                 2-Developed                          Â§")    
+      (format t "~%          Â§                 0-Home Menu                          Â§")
+      (format t "~%          Â§                                                      Â§")
+      (format t "~%          Â§______________________________________________________Â§")
       (format t "~%~%~%          Heuristic -> ")
       )
     (cond ((not (let ((heuristic (read)))
@@ -331,16 +329,16 @@
 ________________________________________   GAME RULES   ________________________________________
                                           (Knight Game)  
                                           
-     1- Esta versão do jogo consiste num tabuleiro com 10 linhas e 10 colunas (10X10)   
-     2- Em que cada casa possui uma pontuação com valor entre 00 e 99 (Aleatório),
-        sem repetição nas celulas do tabuleiro.                               
-     3- O objectivo do jogo é acumular mais pontos que o adversário, usando um cavalo de xadrez.
+     1- Esta versÃ£o do jogo consiste num tabuleiro com 10 linhas e 10 colunas (10X10)   
+     2- Em que cada casa possui uma pontuaÃ§Ã£o com valor entre 00 e 99 (AleatÃ³rio),
+        sem repetiÃ§Ã£o nas celulas do tabuleiro.                               
+     3- O objectivo do jogo Ã© acumular mais pontos que o adversÃ¡rio, usando um cavalo de xadrez.
         Cada jogador tem um cavalo da sua cor (branco ou preto).                        
-     4- Todas as jogadas seguintes são efectuadas através de um movimento de cavalo
+     4- Todas as jogadas seguintes sÃ£o efectuadas atravÃ©s de um movimento de cavalo
         (usando as regras tradicionais do Xadrez para o cavalo).
-        Um cavalo não pode saltar para uma casa vazia (sem número)
-        e também não pode fazê-lo para uma casa que esteja ameaçada pelo cavalo adversário.                                 
-     5- O jogo termina quando não for possível movimentar qualquer um dos cavalos no tabuleiro,
+        Um cavalo nÃ£o pode saltar para uma casa vazia (sem nÃºmero)
+        e tambÃ©m nÃ£o pode fazÃª-lo para uma casa que esteja ameaÃ§ada pelo cavalo adversÃ¡rio.                                 
+     5- O jogo termina quando nÃ£o for possÃ­vel movimentar qualquer um dos cavalos no tabuleiro,
         sendo o vencedor o jogador que ganhou mais pontos.           
                                                                                           
 _________________________________________________________________________________________________
@@ -355,18 +353,18 @@ ________________________________________________________________________________
   (loop
    (progn
      (format t "~%           ______________________________________________________")
-     (format t "~%          §                   LIST OF BOARDS                     §")
-     (format t "~%          §                (Preview one Board)                   §")
-     (format t "~%          §                                                      §")
-     (format t "~%          §                   1-Problem A                        §")
-     (format t "~%          §                   2-Problem B                        §")
-     (format t "~%          §                   3-Problem C                        §")
-     (format t "~%          §                   4-Problem D                        §")
-     (format t "~%          §                   5-Problem E                        §")
-     (format t "~%          §                   6-Problem F                        §")
-     (format t "~%          §                   8-Home Menu                        §")
-     (format t "~%          §                                                      §")
-     (format t "~%          §______________________________________________________§")
+     (format t "~%          Â§                   LIST OF BOARDS                     Â§")
+     (format t "~%          Â§                (Preview one Board)                   Â§")
+     (format t "~%          Â§                                                      Â§")
+     (format t "~%          Â§                   1-Problem A                        Â§")
+     (format t "~%          Â§                   2-Problem B                        Â§")
+     (format t "~%          Â§                   3-Problem C                        Â§")
+     (format t "~%          Â§                   4-Problem D                        Â§")
+     (format t "~%          Â§                   5-Problem E                        Â§")
+     (format t "~%          Â§                   6-Problem F                        Â§")
+     (format t "~%          Â§                   8-Home Menu                        Â§")
+     (format t "~%          Â§                                                      Â§")
+     (format t "~%          Â§______________________________________________________Â§")
      (format t "~%~%~%          Option -> ")
      )
    (cond ((not (let ((escolha (read)))
@@ -385,7 +383,7 @@ ________________________________________________________________________________
 |#
 
 (defun ler_ficheiro (nome_ficheiro)
-  "Lê um ficheiro e coloca numa lista"
+  "LÃª um ficheiro e coloca numa lista"
   (with-open-file (file nome_ficheiro :direction :input)
     (loop for line = (read file nil)
           while line

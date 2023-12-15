@@ -98,7 +98,7 @@
    )
 )
 
-#| Função tá com erro
+;;Função tá com erro
 
 (defun menu-Configurar-tabuleiro (problema)
   "Menu de escolha de posição"
@@ -128,8 +128,6 @@
             (return)))
     ))
    (T (menu-algoritmos problema)))
-|#
-
 
 
 
