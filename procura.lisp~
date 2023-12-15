@@ -5,14 +5,38 @@
 ;;; Autores: Francisco Vaz Nº 202100217, Jaime Vieira Nº 202100108
 
 #|
------------------------------------------------ Algoritmos ------------------------------------------------------------
+----------------------------------------------- Algoritmos e REPRESENTAÇÃO DE ESTADOS ------------------------------------------------------------
 |# 
 
 
+;; cria no
+(defun cria-no (tabuleiro pontos profundidade pai &optional (heuristica 0))                           
+  (list tabuleiro pontos profundidade pai heuristica))
 
+;; vai buscar o estado do tabuleiro 
+(defun no-estado-tabuleiro (no)
+  (first no))
+
+;; vai buscar os pontos 
+(defun no-pontos (no)
+  (third no))
+
+;; vai buscar a profundidade 
+(defun no-profundidade (no)
+  (fourth no))
+
+;; vai buscar o no pai
+(defun no-pai (no)
+  (fifth no))
+
+;; vai buscar a heuristica
+(defun no-Heuristica (no)
+  (sixth no))
 
 (defun no-existep (no lista)
   (eval (cons 'or(mapcar #'(lambda(x) (and(equal (no-estado-tabuleiro no) (no-estado-tabuleiro x))(>= (no-profundidade no)(no-profundidade x))))lista))))
+
+
 
 
 
