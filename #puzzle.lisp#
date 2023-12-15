@@ -214,8 +214,8 @@
                     (criar-estado 
                      (+ pontos-atuais (celula novo-i novo-j tabuleiro))
                      (substituir novo-i novo-j novo-tabuleiro T) ))
-                   (t (NIL))))) ; Se a nova posição for inválida, retorna o estado original
-          (t (NIL)))))
+                   (t NIL)))) ; Se a nova posição for inválida, retorna o estado original
+          (t NIL))))
 
 
 (defun movimentos-possiveis ()
