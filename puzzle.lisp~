@@ -7,7 +7,8 @@
 
 
 
-;;; Tabuleiros
+;;; Tabuleiros de teste
+
 (defun tabuleiro-teste ()
 "Tabuleiro de teste sem nenhuma jogada realizada"
   '(
@@ -41,16 +42,17 @@
 )
 
 
-#|
------------------------------------------------ Seletores ------------------------------------------------------------
-|# 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Seletores ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 
 (defun linha (n tabuleiro)
   (nth n tabuleiro)
 )
 
-(defun celula(i1 i2 tabuleiro)
-  (nth i2 (linha i1 tabuleiro))
+(defun celula(i j tabuleiro)
+  (nth j (linha i tabuleiro))
 )
 
 (defun posicao-linha (posicao)
@@ -62,76 +64,82 @@
 )
 
 (defun lista-numeros (&optional (n 100))
-  (cond ((<= n 0) '())
-        (t (cons (- n 1) (lista-numeros (- n 1))))
+  (cond 
+   ((<= n 0) '())
+   (t (cons (- n 1) (lista-numeros (- n 1))))
   )
 )
 
-#|
------------------------------------------------ FUNÇÕES AUXILIARES ------------------------------------------------------------
-|# 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Funções ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 
 (defun remover-se (predicado lista)
-  (cond ((null lista) nil)
-        ((funcall predicado (car lista)) (remover-se predicado (cdr lista)))
-        (t (cons (car lista) (remover-se predicado (cdr lista))))
+  (cond 
+   ((null lista) nil)
+   ((funcall predicado (car lista)) (remover-se predicado (cdr lista)))
+   (t (cons (car lista) (remover-se predicado (cdr lista))))
   )
 )
 
 (defun baralhar (lista)
-  (cond ((null lista) nil)
-        (t (let* ((indice (random (length lista)))
-                  (elemento (nth indice lista)))
-             (cons elemento (baralhar (remover-se #'(lambda (x) (equal x elemento)) lista))))
-        )
+  (cond 
+   ((null lista) nil)
+   (t (let* ((indice (random (length lista)))
+      (elemento (nth indice lista)))
+      (cons elemento (baralhar (remover-se #'(lambda (x) (equal x elemento)) lista))))
+   )
   )
 )
 
 (defun tabuleiro-aleatorio (&optional (lista (baralhar (lista-numeros))) (n 10))
  (cond
- ((null lista) nil)
- (t (cons (subseq lista 0 n) (tabuleiro-aleatorio (subseq lista n) n)))
+  ((null lista) nil)
+  (t (cons (subseq lista 0 n) (tabuleiro-aleatorio (subseq lista n) n)))
  )
 )
 
 
-
 (defun substituir-posicao (indice lista &optional (valor NIL))
-  (cond ((< indice 0) lista)  ;;índice negativo -> lista original
-        ((null lista) lista)  ;;lista vazia -> lista original
-        ((= indice 0) (cons (cond (valor valor) (t 'NIL)) (cdr lista))) ;;substituir valor no indice 0
-        (t (cons (car lista) (substituir-posicao (- indice 1) (cdr lista) valor)))
+  (cond 
+   ((< indice 0) lista)  ;;retorna a lista original caso o indice seja negativo
+   ((null lista) lista)  ;;retorna a lista original caso a lista esteja vazia
+   ((= indice 0) (cons (cond (valor valor) (t 'NIL)) (cdr lista))) ;;substitui o valor no indice 0
+   (t (cons (car lista) (substituir-posicao (- indice 1) (cdr lista) valor)))
   )
 )
 
 (defun substituir (indice1 indice2 tabuleiro &optional (valor NIL))
-  (substituir-posicao indice1 tabuleiro
-                      (substituir-posicao indice2 (nth indice1 tabuleiro) valor))
+  (substituir-posicao indice1 tabuleiro (substituir-posicao indice2 (nth indice1 tabuleiro) valor))
 )
 
 
 (defun posicao-cavalo-rec (tabuleiro i j)
-  (cond ((>= i (length tabuleiro)) nil)  
-        ((>= j (length (nth i tabuleiro)))  
-         (posicao-cavalo-rec tabuleiro (+ i 1) 0))
-        ((eq (celula i j tabuleiro) 'T)  
-         (list i j))
-        (t (posicao-cavalo-rec tabuleiro i (+ j 1)))
+  (cond 
+   ((>= i (length tabuleiro)) nil)  
+   ((>= j (length (nth i tabuleiro))) (posicao-cavalo-rec tabuleiro (+ i 1) 0))
+   ((eq (celula i j tabuleiro) 'T) (list i j))
+   (t (posicao-cavalo-rec tabuleiro i (+ j 1)))
   )
 )  
 
 (defun posicao-cavalo (tabuleiro)
-  (posicao-cavalo-rec tabuleiro 0 0))
+  (posicao-cavalo-rec tabuleiro 0 0)
+)
 
 
-#|
----------------------------------------------------- Operadores -------------------------------------------------------
-|#
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Operadores ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 
 (defun simetrico(n)
   (let ((unidades (mod n 10))
        (dezenas (floor n 10)))
-    (+ (* unidades 10) dezenas))
+    (+ (* unidades 10) dezenas)
+  )
 )
 
 
@@ -141,14 +149,15 @@
     (and (>= i 0) (< i nlinhas)
          (>= j 0) (< j ncolunas)
          (not (null (celula i j tabuleiro)))
-         )
     )
   )
+)
 
 (defun cavalo-no-tabuleiro-p (tabuleiro)
-  (cond ((eq (posicao-cavalo tabuleiro) 'NIL) NIL)
-        (t T)
-   )
+  (cond 
+   ((eq (posicao-cavalo tabuleiro) 'NIL) NIL)
+   (t T)
+  )
 )
 
 (defun colocar-cavalo(i j tabuleiro)
@@ -162,7 +171,7 @@
    ((= numero 0) nil)
    ((and (= (floor numero 10) (mod numero 10)) (numberp numero)) t)
    (t nil)
-   )
+  )
 )
 
 (defun lista-duplos (tabuleiro)
@@ -173,29 +182,35 @@
    ((regra-duplo (car tabuleiro)) 
     (cons (car tabuleiro) (lista-duplos (cdr tabuleiro))))
    (t (lista-duplos (cdr tabuleiro)))
-   )
- )
+  )
+)
 
 (defun posicoes-duplos (tabuleiro)
   (labels ((posicao-duplo-rec (tabuleiro i j contador)
-             (cond ((>= i (length tabuleiro)) contador)
-                   ((>= j (length (nth i tabuleiro)))
-                    (posicao-duplo-rec tabuleiro (+ i 1) 0 contador))
-                   ((regra-duplo (celula i j tabuleiro))
-                    (posicao-duplo-rec tabuleiro i (+ j 1) (cons (list i j) contador)))
-                   (t (posicao-duplo-rec tabuleiro i (+ j 1) contador)))))
-    (posicao-duplo-rec tabuleiro 0 0 '()))
+             (cond 
+              ((>= i (length tabuleiro)) contador)
+              ((>= j (length (nth i tabuleiro)))
+                  (posicao-duplo-rec tabuleiro (+ i 1) 0 contador))
+              ((regra-duplo (celula i j tabuleiro))
+                  (posicao-duplo-rec tabuleiro i (+ j 1) (cons (list i j) contador)))
+              (t (posicao-duplo-rec tabuleiro i (+ j 1) contador))
+             )))
+    (posicao-duplo-rec tabuleiro 0 0 '())
+  )
 )
 
 
 (defun criar-estado (pontos tabuleiro)
-  (cons pontos tabuleiro))
+  (cons pontos tabuleiro)
+)
 
 (defun tabuleiro-do-estado (estado)
-  (cdr estado))
+  (cdr estado)
+)
 
 (defun pontos-do-estado (estado)
-  (car  estado))
+  (car  estado)
+)
 
 
 (defun operador (estado salto)
@@ -206,7 +221,8 @@
          (j (posicao-coluna posicao))
          (salto-i (posicao-linha salto))
          (salto-j (posicao-coluna salto)))
-    (cond ((and (cavalo-no-tabuleiro-p tabuleiro) (movimento-valido-p (+ i salto-i) (+ j salto-j) tabuleiro))
+    (cond 
+     ((and (cavalo-no-tabuleiro-p tabuleiro) (movimento-valido-p (+ i salto-i) (+ j salto-j) tabuleiro))
            (let* ((novo-tabuleiro (substituir i j tabuleiro NIL))  ; Remover cavalo da posição atual
                   (novo-i (+ i salto-i))
                   (novo-j (+ j salto-j)))
@@ -214,10 +230,15 @@
                     (criar-estado 
                      (+ pontos-atuais (celula novo-i novo-j tabuleiro))
                      (substituir novo-i novo-j novo-tabuleiro T) ))
-                   (t (list estado))))) ; Se a nova posição for inválida, retorna o estado original
-          (t (list estado)))))
+                   (t NIL)))
+     ) ; Se a nova posição for inválida, retorna o estado original
+     (t NIL)
+    )
+  )
+)
 
 
 (defun movimentos-possiveis ()
   '((1 2) (1 -2) (-1 2) (-1 -2)
-    (2 1) (2 -1) (-2 1) (-2 -1)))
+    (2 1) (2 -1) (-2 1) (-2 -1))
+)

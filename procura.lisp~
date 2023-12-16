@@ -2,7 +2,7 @@
 ;;;
 ;;; Descrição: Implementação dos algoritmos de procura BFS, DFS e A*
 ;;;
-;;; Autores: Francisco Vaz Nº 202100217, Jaime Vieira Nº 202100108~
+;;; Autores: Francisco Vaz Nº 202100217, Jaime Vieira Nº 202100108
 
 
 
@@ -44,7 +44,35 @@
   (+ (profundidade_no no) (no_heuristica no)))
 
 
-(defun sucessores (no abertos fechados))
+(defun sucessores (no abertos fechados)
+  (let* ((tabuleiro-atual (tabuleiro-do-estado no))
+         (saltos-possiveis '((1 2) (1 -2) (-1 2) (-1 -2) (2 1) (2 -1) (-2 1) (-2 -1)))
+         (novos-sucessores '()))
+    
+    (defun aplicar-salto (posicao salto)
+      (mapcar #'+ posicao salto))
+    
+    (defun criar-no (novo-estado)
+      (cria_no novo-estado
+               (+ (profundidade_no no) 1)
+               no))
+    
+    ;; Aplicar operador com todos os saltos possíveis
+    (dolist (salto saltos-possiveis)
+      (let ((novo-estado (aplicar-salto tabuleiro-atual salto))
+            (novo-no nil))
+        ;; Criar nós a partir dos estados devolvidos
+        (setq novo-no (criar-no novo-estado))
+        
+        ;; Verificar se o nó está na lista de fechados
+        (unless (some #'(lambda (x) (equal (estado_tabuleiro novo-no) (estado_tabuleiro x))) fechados)
+          ;; Adicionar à lista dos novos-sucessores
+          (push novo-no novos-sucessores))))
+    
+    ;; Adicionar novos-sucessores à lista de abertos
+    (append abertos novos-sucessores)
+  )
+)
 
 (defun no_existep (no lista)
   (eval (cons 'or (mapcar #'(lambda(x) (and (equal (estado_tabuleiro no) (estado_tabuleiro x)) (>= (profundidade_no no) (profundidade_no x)))) lista))))
