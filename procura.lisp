@@ -11,33 +11,28 @@
 
 
 ;; cria no
-(defun cria_no (estado profundidade pai &optional (heuristica 0))                           
-  (list (pontos-do-estado estado) (tabuleiro-do-estado estado) profundidade pai heuristica)
-)
-
-;; vai buscar os pontos 
-(defun pontos (no)
-  (first no)
+(defun cria_no (estado &optional (profundidade 0) (pai NIL) (heuristica 0))                           
+  (list estado profundidade pai heuristica)
 )
 
 ;; vai buscar o estado do tabuleiro 
-(defun estado_tabuleiro (no)
-  (second no)
+(defun estado_no (no)
+  (first no)
 )
 
 ;; vai buscar a profundidade 
 (defun profundidade_no (no)
-  (third no)
+  (second no)
 )
 
 ;; vai buscar o no pai
 (defun no_pai (no)
-  (fourth no)
+  (third no)
 )
 
 ;; vai buscar a heuristica
 (defun no_heuristica (no)
-  (fifth no)
+  (fourth no)
 )
 
 (defun custo_do_no (no)
@@ -45,19 +40,19 @@
 
 
 (defun sucessores (no abertos fechados)
-  (let* ((saltos-possiveis '((1 2) (1 -2) (-1 2) (-1 -2) (2 1) (2 -1) (-2 1) (-2 -1)))
-         (novos-estados (apply #'append 
+  (let* ((saltos_possiveis '((1 2) (1 -2) (-1 2) (-1 -2) (2 1) (2 -1) (-2 1) (-2 -1)))
+         (novos_estados (apply #'append 
              (mapcar #'(lambda (salto)
-                         (cond  ((null (operador (estadoNo no) salto)) nil)
-                                (t (list (operador (estadoNo no) salto)))
+                         (cond  ((null (operador (estado_no no) salto)) nil)
+                                (t (list (operador (estado_no no) salto)))
                           ))
-                    saltos-possiveis)))
-         (novos-sucessores (apply #'append 
+                    saltos_possiveis)))
+         (novos_sucessores (apply #'append 
              (mapcar #'(lambda (estado)
-                 (list (criarNo estado (1+ (profundidadeNo no)) no)))
-                    novos-estados)))
-         (novos-abertos (append abertos novos-sucessores)))
-          novos-abertos
+                 (list (cria_no estado (1+ (profundidade_no no)) no)))
+                    novos_estados)))
+         (novos_abertos (append abertos novos_sucessores)))
+          novos_abertos
           )
 )
 
@@ -65,6 +60,8 @@
   (eval (cons 'or (mapcar #'(lambda(x) (and (equal (estado_tabuleiro no) (estado_tabuleiro x)) (>= (profundidade_no no) (profundidade_no x)))) lista))))
 
 
+(defun falhou ()
+  (format t "Não conseguiu atingir o objetivo mínimo.~%"))
 
 
 
@@ -87,7 +84,7 @@
 
 
 (defun bfs (abertos fechados objetivo)
-  (cond ((null abertos) (fail))
+  (cond ((null abertos) (falhou))
         (t (let* ((no (first abertos))  
                   (novos_fechados (cons no fechados))
                   (nos_sucessores (sucessores no abertos fechados) )
