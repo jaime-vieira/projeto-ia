@@ -39,6 +39,18 @@
   (+ (profundidade_no no) (no_heuristica no)))
 
 
+(defun ver_nos_repetidos (estado fechados)
+  "Verifica se o tabuleiro do estado já existe na lista de nós fechados."
+  (cond ((null fechados) estado)
+        (t (let* ((tabuleiro_estado (estado_no estado))
+                   (tabuleiro_no (estado_no (first fechados))))
+             (cond ((equal tabuleiro_estado tabuleiro_no) nil)
+                   (t (ver_nos_repetidos estado (rest fechados)))
+             ))
+         )
+  )
+)
+
 (defun sucessores (no abertos fechados)
   (let* ((saltos_possiveis '((1 2) (1 -2) (-1 2) (-1 -2) (2 1) (2 -1) (-2 1) (-2 -1)))
          (novos_estados (apply #'append 
@@ -49,11 +61,11 @@
                     saltos_possiveis)))
          (novos_sucessores (apply #'append 
              (mapcar #'(lambda (estado)
-                 (list (cria_no estado (1+ (profundidade_no no)) no)))
+                 (list (ver_nos_repetidos (cria_no estado (1+ (profundidade_no no)) no) fechados)))
                     novos_estados)))
          (novos_abertos (append abertos novos_sucessores)))
-          novos_abertos
-          )
+    novos_abertos
+  )
 )
 
 (defun no_existep (no lista)
