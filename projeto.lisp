@@ -99,7 +99,7 @@
 )
 
 ;;Função tá com erro
-
+#|
 (defun menu_configurar-tabuleiro (problema)
   "Menu de escolha de posição"
   (cond
@@ -129,7 +129,7 @@
     ))
    (T (menu-algoritmos problema)))
 
-
+|#
 
 
 
