@@ -4,51 +4,89 @@
 ;;;
 ;;; Autores: Francisco Vaz Nº 202100217, Jaime Vieira Nº 202100108
 
-#|
------------------------------------------------ Algoritmos e REPRESENTAÇÃO DE ESTADOS ------------------------------------------------------------
-|# 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Nós ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 
 ;; cria no
 (defun cria_no (estado profundidade pai &optional (heuristica 0))                           
-  (list (tabuleiro-do-estado estado) (pontos-do-estado estado) profundidade pai heuristica))
-
-;; vai buscar o estado do tabuleiro 
-(defun estado_tabuleiro (no)
-  (first no))
+  (list (pontos-do-estado estado) (tabuleiro-do-estado estado) profundidade pai heuristica)
+)
 
 ;; vai buscar os pontos 
 (defun pontos (no)
-  (second no))
+  (first no)
+)
+
+;; vai buscar o estado do tabuleiro 
+(defun estado_tabuleiro (no)
+  (second no)
+)
 
 ;; vai buscar a profundidade 
 (defun profundidade_no (no)
-  (third no))
+  (third no)
+)
 
 ;; vai buscar o no pai
 (defun no_pai (no)
-  (fourth no))
+  (fourth no)
+)
 
 ;; vai buscar a heuristica
 (defun no_heuristica (no)
-  (fifth no))
+  (fifth no)
+)
 
 (defun custo_do_no (no)
   (+ (profundidade_no no) (no_heuristica no)))
 
 
-(defun sucessores (no abertos fechados))
+(defun sucessores (no abertos fechados)
+  (let* ((tabuleiro-atual (tabuleiro-do-estado no))
+         (saltos-possiveis '((1 2) (1 -2) (-1 2) (-1 -2) (2 1) (2 -1) (-2 1) (-2 -1)))
+         (novos-sucessores '()))
+    
+    (defun aplicar-salto (posicao salto)
+      (mapcar #'+ posicao salto))
+    
+    (defun criar-no (novo-estado)
+      (cria_no novo-estado
+               (+ (profundidade_no no) 1)
+               no))
+    
+    ;; Aplicar operador com todos os saltos possíveis
+    (dolist (salto saltos-possiveis)
+      (let ((novo-estado (aplicar-salto tabuleiro-atual salto))
+            (novo-no nil))
+        ;; Criar nós a partir dos estados devolvidos
+        (setq novo-no (criar-no novo-estado))
+        
+        ;; Verificar se o nó está na lista de fechados
+        (unless (some #'(lambda (x) (equal (estado_tabuleiro novo-no) (estado_tabuleiro x))) fechados)
+          ;; Adicionar à lista dos novos-sucessores
+          (push novo-no novos-sucessores))))
+    
+    ;; Adicionar novos-sucessores à lista de abertos
+    (append abertos novos-sucessores)
+  )
+)
 
 (defun no_existep (no lista)
   (eval (cons 'or (mapcar #'(lambda(x) (and (equal (estado_tabuleiro no) (estado_tabuleiro x)) (>= (profundidade_no no) (profundidade_no x)))) lista))))
 
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Algoritmos ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-#|
------------------------------------------------ BFS ------------------------------------------------------------
-|#  
+
+
+;;;;;;;;;;;;;;;;; BFS ;;;;;;;;;;;;;;;;
+
+
 
 
 (defun abertos-bfs (abertos sucessores)
@@ -63,9 +101,12 @@
     (t (bfs (car abertos) funcao-objetivo sucessores operadores (abertos-bfs (cdr abertos) (funcall sucessores no operadores 'bfs nil)) (pushnew no fechados)))))
 
 
-#|
------------------------------------------------ DFS ------------------------------------------------------------
-|#  
+
+
+;;;;;;;;;;;;;;;;; DFS ;;;;;;;;;;;;;;;;;
+
+
+
 
 (defun abertos-dfs (abertos sucessores)
   "Devolve a lista de abertos do DFS"
@@ -109,9 +150,13 @@
             (cons cabeca (suce-existe (cdr suce) lista f))
             (suce-existe (cdr suce) lista f)))))
 
-#|
------------------------------------------------ A* ------------------------------------------------------------
-|#  
+
+
+
+;;;;;;;;;;;;;;;;;; A* ;;;;;;;;;;;;;;; 
+
+
+
 
 
 (defun quicksort (nodes)
@@ -157,16 +202,12 @@
 
 
 
-#|
------------------------------------------------ SMA* ------------------------------------------------------------
-|# 
+;;;;;;;;;;;;;;;;;;;; SMA* ;;;;;;;;;;;;;;;;;;;
 
 
 
 
+;;;;;;;;;;;;;;;;;;;; IDA* ;;;;;;;;;;;;;;;;;;;
 
-#|
------------------------------------------------ IDA* ------------------------------------------------------------
-|# 
 
 

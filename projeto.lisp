@@ -100,7 +100,7 @@
 
 ;;Função tá com erro
 
-(defun menu-Configurar-tabuleiro (problema)
+(defun menu_configurar-tabuleiro (problema)
   "Menu de escolha de posição"
   (cond
    ((equal (posicao-cavalo problema) nil )  
