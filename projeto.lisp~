@@ -59,39 +59,44 @@
     (format t "~%4 - Problema D")
     (format t "~%5 - Problema E")
     (format t "~%6 - Problema F")
-    (format t "~%7 - Menu Inicial")
+    (format t "~%0 - Menu Inicial")
     (format t "~%~% Escolha uma opção de 1 a 7:")
     (let ((opcao (read)))
      (cond 
       ((not (numberp opcao)) (format t "~%Escolha inválida.~%"))
-      ((= opcao 1) (progn (definir-objetivo 'A) (menu-escolha (problema-A) ) t))
-      ((= opcao 2) (progn (definir-objetivo 'B) (menu-escolha (problema-B) ) t))
-      ((= opcao 3) (progn (definir-objetivo 'C) (menu-escolha (problema-C) ) t))
-      ((= opcao 4) (progn (definir-objetivo 'D) (menu-escolha (problema-D) ) t))
-      ((= opcao 5) (progn (definir-objetivo 'E) (menu-escolha (problema-E) ) t))
-      ((= opcao 6) (progn (definir-objetivo 'F) (menu-escolha (problema-F) ) t))
-      ((= opcao 7) (menu_inicial))
+      ((= opcao 1) (menu_escolha_casa 0) (return))
+      ((= opcao 2) (menu_escolha_casa 1) (return))
+      ((= opcao 3) (menu_escolha_casa 2) (return))
+      ((= opcao 4) (menu_escolha_casa 3) (return))
+      ((= opcao 5) (menu_escolha_casa 4) (return))
+      ((= opcao 6) (menu_escolha_casa 5) (return))
+      ((= opcao 0) (menu_inicial) (return))
       (t (format t "~%Escolha inválida.~%"))
      )
-    )
+   )
  )
 )
 
 
-(defun menu_escolha_modo (problema)
+(defun menu_escolha_casa (problema)
   "Menu de escolha de tipo de jogo"
   (loop
-     (format t "~%Escolha um Modo")
-     (format t "~%1 - Ir para o algoritmo")
-     (format t "~%2 - Configurar Tabuleiro")
-     (format t "~%3 - Menu Inicial")
-     (format t "~%~% Escolha uma opção de 1 a 3:")
+     (format t "~%Escolha apenas uma posição com valores da primeira")      
+     (format t "~%linha para o cavalo(0 para Menu Inicial):~%")
      (let ((opcao (read)))
       (cond 
-       ((not (numberp opcao)) (format t "~%Escolha inválida.~%"))
-       ((= opcao 1) (menu-algoritmos problema))
-       ((= opcao 2) (menu-configurar-tabuleiro problema))
-       ((= opcao 3) (menu_inicial))
+       ((or (not (numberp opcao)) (< opcao 0) (> opcao 10)) (format t "~%Escolha inválida.~%"))
+       ((= opcao 0) 
+        (menu_inicial) (return)
+       )
+       ((and (>= opcao 1) (<= opcao 10))
+        
+        ;(ler_ficheiro (concatenate 'string (path) "problems.dat"))
+        (let ((pontos (car (car (ler_ficheiro (concatenate 'string (path) "problems.dat"))))) 
+              (tabuleiro (cdr (car (ler_ficheiro (concatenate 'string (path) "problems.dat"))))))
+          (tabuleiro)
+        )
+       )
        (t (format t "~%Escolha inválida.~%"))
       )
      )
@@ -99,7 +104,7 @@
 )
 
 ;;Função tá com erro
-
+#|
 (defun menu_configurar-tabuleiro (problema)
   "Menu de escolha de posição"
   (cond
@@ -111,7 +116,7 @@
        (format t "~%-> ")
       (let ((opcao (read)))
        (cond 
-        ((or (numberp opcao) (> opcao 10) (< opcao 0))) (format t "~%Escolha inválida.~%"))
+        ((or (not (numberp opcao)) (< opcao 0) (> opcao 10))) (format t "~%Escolha inválida.~%"))
         ((zerop opcao) (menu_inicial))
         ((= opcao 2) (menu-configurar-tabuleiro problema))
         (t (format t "~%Escolha inválida.~%"))
@@ -129,9 +134,7 @@
     ))
    (T (menu-algoritmos problema)))
 
-
-
-
+|#
 
 
 
