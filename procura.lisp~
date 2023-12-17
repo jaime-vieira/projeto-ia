@@ -11,38 +11,45 @@
 
 
 ;; cria no
-(defun cria_no (estado profundidade pai &optional (heuristica 0))                           
-  (list (pontos-do-estado estado) (tabuleiro-do-estado estado) profundidade pai heuristica)
-)
-
-;; vai buscar os pontos 
-(defun pontos (no)
-  (first no)
+(defun cria_no (estado &optional (profundidade 0) (pai NIL) (heuristica 0))                           
+  (list estado profundidade pai heuristica)
 )
 
 ;; vai buscar o estado do tabuleiro 
-(defun estado_tabuleiro (no)
-  (second no)
+(defun estado_no (no)
+  (first no)
 )
 
 ;; vai buscar a profundidade 
 (defun profundidade_no (no)
-  (third no)
+  (second no)
 )
 
 ;; vai buscar o no pai
 (defun no_pai (no)
-  (fourth no)
+  (third no)
 )
 
 ;; vai buscar a heuristica
 (defun no_heuristica (no)
-  (fifth no)
+  (fourth no)
 )
 
 (defun custo_do_no (no)
   (+ (profundidade_no no) (no_heuristica no)))
 
+
+(defun ver_nos_repetidos (estado fechados)
+  "Verifica se o tabuleiro do estado já existe na lista de nós fechados."
+  (cond ((null fechados) estado)
+        (t (let* ((tabuleiro_estado (estado_no estado))
+                   (tabuleiro_no (estado_no (first fechados))))
+             (cond ((equal tabuleiro_estado tabuleiro_no) nil)
+                   (t (ver_nos_repetidos estado (rest fechados)))
+             ))
+         )
+  )
+)
 
 (defun sucessores (no abertos fechados)
   (let* ((saltos_possiveis '((1 2) (1 -2) (-1 2) (-1 -2) (2 1) (2 -1) (-2 1) (-2 -1)))
@@ -54,11 +61,11 @@
                     saltos_possiveis)))
          (novos_sucessores (apply #'append 
              (mapcar #'(lambda (estado)
-                 (list (cria_no estado (1+ (profundidade_no no)) no)))
+                 (list (ver_nos_repetidos (cria_no estado (1+ (profundidade_no no)) no) fechados)))
                     novos_estados)))
          (novos_abertos (append abertos novos_sucessores)))
-          novos_abertos
-          )
+    novos_abertos
+  )
 )
 
 (defun no_existep (no lista)

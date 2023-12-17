@@ -48,10 +48,12 @@
 
 
 (defun linha (n tabuleiro)
+  "Retorna a linha de um tabuleiro"
   (nth n tabuleiro)
 )
 
 (defun celula(i j tabuleiro)
+  "Retorna o valor de uma celula"
   (nth j (linha i tabuleiro))
 )
 
@@ -140,10 +142,10 @@
 
 
 (defun movimento_valido_p (i j tabuleiro)
-  (let ((nlinhas (length tabuleiro))
-        (ncolunas (length (car tabuleiro))))
-    (and (>= i 0) (< i nlinhas)
-         (>= j 0) (< j ncolunas)
+  (let ((n_linhas (length tabuleiro))
+        (n_colunas (length (car tabuleiro))))
+    (and (>= i 0) (< i n_linhas)
+         (>= j 0) (< j n_colunas)
          (not (null (celula i j tabuleiro)))
     )
   )
@@ -182,6 +184,7 @@
 )
 
 (defun posicoes_duplos (tabuleiro)
+  "Localização dos duplos"
   (labels ((posicao_duplo_rec (tabuleiro i j contador)
              (cond 
               ((>= i (length tabuleiro)) contador)
@@ -195,7 +198,11 @@
   )
 )
 
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Operador Geral  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 
 (defun criar_estado (pontos tabuleiro)
   (cons pontos tabuleiro)
@@ -210,32 +217,35 @@
 )
 
 
+(defun verificar_nos_repetidos (estado fechados)
+  "Verifica se o tabuleiro do estado já existe na lista de nós fechados."
+  (cond 
+    ((null fechados) estado)
+        (t (let* ((tabuleiro-estado (tabuleiro_do_estado estado))
+                   (tabuleiro-no (tabuleiro_do_estado (estado_no (first fechados)))))
+             (cond ((equal tabuleiro-estado tabuleiro-no) nil)
+                   (t (verificar_nos_repetidos estado (rest fechados)))
+             ))
+         )
+  )
+)
+
+
 (defun operador (estado salto)
-  (let* ((tabuleiro (tabuleiro_do_estado estado))
-         (pontos_atuais (pontos_do_estado estado))
+  (let* ((pontos (pontos_do_estado estado))
+         (tabuleiro (tabuleiro_do_estado estado))
          (posicao (posicao_cavalo tabuleiro))
          (i (posicao_linha posicao))
-         (j (posicao_coluna posicao))
-         (salto_i (posicao_linha salto))
-         (salto_j (posicao_coluna salto)))
-    (cond 
-     ((and (cavalo_no_tabuleiro_p tabuleiro) (movimento_valido_p (+ i salto_i) (+ j salto_j) tabuleiro))
-      (let* ((novo_tabuleiro (substituir i j tabuleiro NIL))  ; Remover cavalo da posição atual
-             (novo_i (+ i salto_i))
-             (novo_j (+ j salto_j)))
-        (cond ((movimento_valido_p novo_i novo_j tabuleiro)
-               (criar_estado 
-                (+ pontos_atuais (celula novo_i novo_j tabuleiro))
-                (substituir novo_i novo_j novo_tabuleiro T) ))
-              (t NIL)))
-      ) ; Se a nova posição for inválida, retorna o estado original
-     (t NIL)
-     )
+         (j (posicao_coluna posicao)))
+    (cond ((and (cavalo_no_tabuleiro_p tabuleiro) (movimento_valido_p (+ i (posicao_linha salto)) (+ j (posicao_coluna salto)) tabuleiro))
+           (let* ((novo_tabuleiro (substituir i j tabuleiro NIL))  ; Remover cavalo da posição atual
+                  (novo_i (+ i (posicao_linha salto)))
+                  (novo_j (+ j (posicao_coluna salto))))
+             (cond ((movimento_valido_p novo_i novo_j tabuleiro)
+                    (criar_estado (+ pontos (celula novo_i novo_j tabuleiro)) (substituir novo_i novo_j novo_tabuleiro T))
+                   )
+                   (t nil)))) ; Se a nova posição for inválida, retorna o estado original
+          (t nil)
     )
   )
-
-
-(defun movimentos_possiveis ()
-  '((1 2) (1 -2) (-1 2) (-1 -2)
-    (2 1) (2 -1) (-2 1) (-2 -1))
 )

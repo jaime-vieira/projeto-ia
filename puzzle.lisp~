@@ -9,7 +9,7 @@
 
 ;;; Tabuleiros de teste
 
-(defun tabuleiro-teste ()
+(defun tabuleiro_teste ()
 "Tabuleiro de teste sem nenhuma jogada realizada"
   '(
     (94 25 54 89 21 8 36 14 41 96) 
@@ -25,7 +25,7 @@
     )
 )
 
-(defun tabuleiro-jogado ()
+(defun tabuleiro_jogado ()
 "Tabuleiro de teste igual ao anterior mas tendo sido colocado o cavalo na posição: i=0 e j=0"
   '(
     (T 25 54 89 21 8 36 14 41 96) 
@@ -55,18 +55,18 @@
   (nth j (linha i tabuleiro))
 )
 
-(defun posicao-linha (posicao)
+(defun posicao_linha (posicao)
   (car posicao)
 )
 
-(defun posicao-coluna (posicao)
+(defun posicao_coluna (posicao)
   (cadr posicao)
 )
 
-(defun lista-numeros (&optional (n 100))
+(defun lista_numeros (&optional (n 100))
   (cond 
    ((<= n 0) '())
-   (t (cons (- n 1) (lista-numeros (- n 1))))
+   (t (cons (- n 1) (lista_numeros (- n 1))))
   )
 )
 
@@ -76,11 +76,11 @@
 
 
 
-(defun remover-se (predicado lista)
+(defun remover_se (predicado lista)
   (cond 
    ((null lista) nil)
-   ((funcall predicado (car lista)) (remover-se predicado (cdr lista)))
-   (t (cons (car lista) (remover-se predicado (cdr lista))))
+   ((funcall predicado (car lista)) (remover_se predicado (cdr lista)))
+   (t (cons (car lista) (remover_se predicado (cdr lista))))
   )
 )
 
@@ -89,49 +89,45 @@
    ((null lista) nil)
    (t (let* ((indice (random (length lista)))
       (elemento (nth indice lista)))
-      (cons elemento (baralhar (remover-se #'(lambda (x) (equal x elemento)) lista))))
+      (cons elemento (baralhar (remover_se #'(lambda (x) (equal x elemento)) lista))))
    )
   )
 )
 
-(defun tabuleiro-aleatorio (&optional (lista (baralhar (lista-numeros))) (n 10))
+(defun tabuleiro_aleatorio (&optional (lista (baralhar (lista_numeros))) (n 10))
  (cond
   ((null lista) nil)
-  (t (cons (subseq lista 0 n) (tabuleiro-aleatorio (subseq lista n) n)))
+  (t (cons (subseq lista 0 n) (tabuleiro_aleatorio (subseq lista n) n)))
  )
 )
 
 
-(defun substituir-posicao (indice lista &optional (valor NIL))
+(defun substituir_posicao (indice lista &optional (valor NIL))
   (cond 
    ((< indice 0) lista)  ;;retorna a lista original caso o indice seja negativo
    ((null lista) lista)  ;;retorna a lista original caso a lista esteja vazia
    ((= indice 0) (cons (cond (valor valor) (t 'NIL)) (cdr lista))) ;;substitui o valor no indice 0
-   (t (cons (car lista) (substituir-posicao (- indice 1) (cdr lista) valor)))
+   (t (cons (car lista) (substituir_posicao (- indice 1) (cdr lista) valor)))
   )
 )
 
 (defun substituir (indice1 indice2 tabuleiro &optional (valor NIL))
-  (substituir-posicao indice1 tabuleiro (substituir-posicao indice2 (nth indice1 tabuleiro) valor))
+  (substituir_posicao indice1 tabuleiro (substituir_posicao indice2 (nth indice1 tabuleiro) valor))
 )
 
 
-(defun posicao-cavalo-rec (tabuleiro i j)
+(defun posicao_cavalo_rec (tabuleiro i j)
   (cond 
    ((>= i (length tabuleiro)) nil)  
-   ((>= j (length (nth i tabuleiro))) (posicao-cavalo-rec tabuleiro (+ i 1) 0))
+   ((>= j (length (nth i tabuleiro))) (posicao_cavalo_rec tabuleiro (+ i 1) 0))
    ((eq (celula i j tabuleiro) 'T) (list i j))
-   (t (posicao-cavalo-rec tabuleiro i (+ j 1)))
+   (t (posicao_cavalo_rec tabuleiro i (+ j 1)))
   )
 )  
 
-(defun posicao-cavalo (tabuleiro)
-  (posicao-cavalo-rec tabuleiro 0 0)
+(defun posicao_cavalo (tabuleiro)
+  (posicao_cavalo_rec tabuleiro 0 0)
 )
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Operadores ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 
@@ -143,7 +139,7 @@
 )
 
 
-(defun movimento-valido-p (i j tabuleiro)
+(defun movimento_valido_p (i j tabuleiro)
   (let ((nlinhas (length tabuleiro))
         (ncolunas (length (car tabuleiro))))
     (and (>= i 0) (< i nlinhas)
@@ -153,19 +149,19 @@
   )
 )
 
-(defun cavalo-no-tabuleiro-p (tabuleiro)
+(defun cavalo_no_tabuleiro_p (tabuleiro)
   (cond 
-   ((eq (posicao-cavalo tabuleiro) 'NIL) NIL)
+   ((eq (posicao_cavalo tabuleiro) 'NIL) NIL)
    (t T)
   )
 )
 
-(defun colocar-cavalo(i j tabuleiro)
+(defun colocar_cavalo(i j tabuleiro)
   (substituir i j tabuleiro T)
 )
 
 
-(defun regra-duplo (numero)
+(defun regra_duplo (numero)
   (cond
    ((not (numberp numero)) nil)
    ((= numero 0) nil)
@@ -174,71 +170,72 @@
   )
 )
 
-(defun lista-duplos (tabuleiro)
+(defun lista_duplos (tabuleiro)
   (cond 
    ((null tabuleiro) '())
    ((listp (car tabuleiro)) 
-    (append (lista-duplos (car tabuleiro)) (lista-duplos (cdr tabuleiro))))
-   ((regra-duplo (car tabuleiro)) 
-    (cons (car tabuleiro) (lista-duplos (cdr tabuleiro))))
-   (t (lista-duplos (cdr tabuleiro)))
+    (append (lista_duplos (car tabuleiro)) (lista_duplos (cdr tabuleiro))))
+   ((regra_duplo (car tabuleiro)) 
+    (cons (car tabuleiro) (lista_duplos (cdr tabuleiro))))
+   (t (lista_duplos (cdr tabuleiro)))
   )
 )
 
-(defun posicoes-duplos (tabuleiro)
-  (labels ((posicao-duplo-rec (tabuleiro i j contador)
+(defun posicoes_duplos (tabuleiro)
+  (labels ((posicao_duplo_rec (tabuleiro i j contador)
              (cond 
               ((>= i (length tabuleiro)) contador)
               ((>= j (length (nth i tabuleiro)))
-                  (posicao-duplo-rec tabuleiro (+ i 1) 0 contador))
-              ((regra-duplo (celula i j tabuleiro))
-                  (posicao-duplo-rec tabuleiro i (+ j 1) (cons (list i j) contador)))
-              (t (posicao-duplo-rec tabuleiro i (+ j 1) contador))
+                  (posicao_duplo_rec tabuleiro (+ i 1) 0 contador))
+              ((regra_duplo (celula i j tabuleiro))
+                  (posicao_duplo_rec tabuleiro i (+ j 1) (cons (list i j) contador)))
+              (t (posicao_duplo_rec tabuleiro i (+ j 1) contador))
              )))
-    (posicao-duplo-rec tabuleiro 0 0 '())
+    (posicao_duplo_rec tabuleiro 0 0 '())
   )
 )
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Operador Geral  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun criar-estado (pontos tabuleiro)
+(defun criar_estado (pontos tabuleiro)
   (cons pontos tabuleiro)
 )
 
-(defun tabuleiro-do-estado (estado)
+(defun tabuleiro_do_estado (estado)
   (cdr estado)
 )
 
-(defun pontos-do-estado (estado)
+(defun pontos_do_estado (estado)
   (car  estado)
 )
 
 
 (defun operador (estado salto)
-  (let* ((tabuleiro (tabuleiro-do-estado estado))
-         (pontos-atuais (pontos-do-estado estado))
-         (posicao (posicao-cavalo tabuleiro))
-         (i (posicao-linha posicao))
-         (j (posicao-coluna posicao))
-         (salto-i (posicao-linha salto))
-         (salto-j (posicao-coluna salto)))
+  (let* ((tabuleiro (tabuleiro_do_estado estado))
+         (pontos_atuais (pontos_do_estado estado))
+         (posicao (posicao_cavalo tabuleiro))
+         (i (posicao_linha posicao))
+         (j (posicao_coluna posicao))
+         (salto_i (posicao_linha salto))
+         (salto_j (posicao_coluna salto)))
     (cond 
-     ((and (cavalo-no-tabuleiro-p tabuleiro) (movimento-valido-p (+ i salto-i) (+ j salto-j) tabuleiro))
-           (let* ((novo-tabuleiro (substituir i j tabuleiro NIL))  ; Remover cavalo da posição atual
-                  (novo-i (+ i salto-i))
-                  (novo-j (+ j salto-j)))
-             (cond ((movimento-valido-p novo-i novo-j tabuleiro)
-                    (criar-estado 
-                     (+ pontos-atuais (celula novo-i novo-j tabuleiro))
-                     (substituir novo-i novo-j novo-tabuleiro T) ))
-                   (t NIL)))
-     ) ; Se a nova posição for inválida, retorna o estado original
+     ((and (cavalo_no_tabuleiro_p tabuleiro) (movimento_valido_p (+ i salto_i) (+ j salto_j) tabuleiro))
+      (let* ((novo_tabuleiro (substituir i j tabuleiro NIL))  ; Remover cavalo da posição atual
+             (novo_i (+ i salto_i))
+             (novo_j (+ j salto_j)))
+        (cond ((movimento_valido_p novo_i novo_j tabuleiro)
+               (criar_estado 
+                (+ pontos_atuais (celula novo_i novo_j tabuleiro))
+                (substituir novo_i novo_j novo_tabuleiro T) ))
+              (t NIL)))
+      ) ; Se a nova posição for inválida, retorna o estado original
      (t NIL)
+     )
     )
   )
-)
 
 
-(defun movimentos-possiveis ()
+(defun movimentos_possiveis ()
   '((1 2) (1 -2) (-1 2) (-1 -2)
     (2 1) (2 -1) (-2 1) (-2 -1))
 )
