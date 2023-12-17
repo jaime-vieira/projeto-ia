@@ -108,8 +108,7 @@ O algoritmo DFS permite procurar os nós em profundidade no tabuleiro, ao contr�
 O algoritmo A* assim como os anteriores é utilizado para procurar nós em uma árvore, ou seja, os algoritmos BFS e DFS consistem em buscar estados em um espaço de problema menos complexo. Por outro lado, o A* permite a busca de estados em um espaço com problemas mais complexos, gerando uma árvore de sucessores através da função heurística que calcula o custo. Esse custo é então utilizado para ordenar as listas de nós das possíveis jogadas no tabuleiro visando atingir o nó da possível solução.
 
 #### Heuristica Base
-Tal como descrito no enunciado, utilizamos uma heurística de base que privilegia visitar as casas com o maior número de pontos para determinar o tabuleiro x. A função heurística h(x) é definida como a razão entre o número de pontos faltantes para atingir o valor objetivo e a média por casa dos pontos que constam no tabuleiro x no momento.
-
+Sugere-se usar como heurística de base uma abordagem que privilegie a visita às casas com o maior número de pontos. Para um determinado tabuleiro x, podemos calcular uma heurística h(x) usando a fórmula h(x) = o(x)/m(x), onde m(x) representa a média dos pontos por casa no tabuleiro x e o(x) é o número de pontos restantes para atingir o objetivo definido. Essa heurística pode ser refinada ainda mais para refletir melhor nosso conhecimento do domínio e contribuir para uma busca informada mais eficiente. Além da heurística mencionada acima, é recomendável definir pelo menos outra heurística adicional que possa melhorar ainda mais o desempenho dos algoritmos de busca informados.
 ### Heurística
 
 
