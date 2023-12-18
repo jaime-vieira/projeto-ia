@@ -133,7 +133,7 @@
 
 
 
-(defun simetrico(n)
+(defun regra_simetrico(n)
   (let ((unidades (mod n 10))
        (dezenas (floor n 10)))
     (+ (* unidades 10) dezenas)

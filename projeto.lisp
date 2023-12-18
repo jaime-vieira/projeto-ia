@@ -41,9 +41,10 @@
   (loop
     (format t "~%1 - Iniciar Jogo")
     (format t "~%2 - Sair~%")
-    (format t "~%Escolha um número entre 1 e 2:~%")
+    (format t "~%Escolha um número entre 1 e 2: ")
     (let ((opcao (read)))
      (cond 
+      ((not (numberp opcao)) (format t "~%Escolha inválida.~%"))
       ((= opcao 1) (format t "~%A começar o jogo...~%") (menu_escolha_problema) (return-from menu_inicial))
       ((= opcao 2) (format t "~%A sair... Até à próxima!~%") (return-from menu_inicial))
       (t (format t "~%Escolha inválida. ~%"))
@@ -64,7 +65,7 @@
     (format t "~%5 - Problema E")
     (format t "~%6 - Problema F")
     (format t "~%0 - Menu Inicial")
-    (format t "~%~% Escolha uma opção de 1 a 7:")
+    (format t "~%~% Escolha uma opção de 1 a 7: ")
     (let ((opcao (read)))
      (cond 
       ((not (numberp opcao)) (format t "~%Escolha inválida.~%"))
@@ -99,8 +100,8 @@
               (tabuleiro (cdr (nth problema ficheiro))))
           (cond
            ((movimento_valido_p 0 (1- opcao) tabuleiro)
-            ;(menu_algoritmos (criar_estado pontos (colocar_cavalo 0 (1- opcao) tabuleiro)))
-            (format t "~%Escolha certa.~%")
+            (menu_algoritmos (criar_estado pontos (colocar_cavalo 0 (1- opcao) tabuleiro))) (return-from menu_escolha_casa)
+            ;(format t "~%Escolha certa.~%")
             #|(format t "~{~a~^, ~}~%" tabuleiro)
             (format t "~a ~%" pontos)|#
             ;(format t "~{~a~^, ~}~%" (tabuleiro_do_estado (criar_estado pontos (colocar_cavalo 0 (1- opcao) tabuleiro))))
@@ -125,13 +126,13 @@
     (format t "~%2 - DFS")
     (format t "~%3 - A*")
     (format t "~%0 - Menu Inicial")
-    (format t "~%~% Escolha uma opção de 1 a 3:")
+    (format t "~%~% Escolha uma opção de 1 a 3: ")
     (let ((opcao (read)))
      (cond 
       ((not (numberp opcao)) (format t "~%Escolha inválida.~%"))
       ((= opcao 1) (executar_estatisticas 'bfs estado) (return-from menu_algoritmos))
       ((= opcao 2) (executar_estatisticas 'dfs estado) (return-from menu_algoritmos))
-      ((= opcao 3) (executar_estatisticas 'a_asterisco) (return-from menu_algoritmos))
+      ((= opcao 3) (menu_heuristica estado) (return-from menu_algoritmos))
       ((= opcao 0) (menu_inicial) (return-from menu_algoritmos))
       (t (format t "~%Escolha inválida.~%"))
      )
@@ -140,18 +141,20 @@
 )
 
 (defun menu_heuristica (estado)
- "Menu de escolha do algoritmo"
+ "Menu de escolha da heurística"
  (loop
-    (format t "~%Escolha a heuristica:~%")
+    (format t "~%Escolha a heurística:~%")
     (format t "~%1 - h(x) = o(x)/m(x)")
     (format t "~%2 - Implementada")
     (format t "~%0 - Menu Inicial")
-    (format t "~%~% Escolha uma opção de 1 a 2:")
+    (format t "~%~% Escolha uma opção de 1 a 2: ")
     (let ((opcao (read)))
      (cond 
-      ((= opcao 1) (executar_estatisticas 'bfs estado) (return-from menu_algoritmos))
-      ((= opcao 2) (executar_estatisticas 'dfs estado) (return-from menu_algoritmos))
-      ((= opcao 0) (menu_inicial) (return-from menu_algoritmos))
+      ((not (numberp opcao)) (format t "~%Escolha inválida.~%"))
+      ((= opcao 1) (executar_estatisticas 'a_asterisco estado) (return-from menu_heuristica))
+      ((= opcao 2) (executar_estatisticas 'a_asterisco_melhorado estado) (return-from menu_heuristica))
+      ((= opcao 0) (menu_inicial) (return-from menu_heuristica))
+      (t (format t "~%Escolha inválida.~%"))
      )
     )
  )
@@ -160,9 +163,11 @@
 
 (defun executar_estatisticas (algoritmo estado)
   (cond 
-      ((= opcao 1) (menu_escolha_casa 0) (return-from menu_algoritmos))
-      ((= opcao 2) (menu_escolha_casa 1) (return-from menu_algoritmos))
-      ((= opcao 3) (menu_escolha_casa 2) (return-from menu_algoritmos))
+      ((eq algoritmo 'bfs) (bfs (list (cria_no estado)) '() (pontos_do_estado estado)))
+      ((eq algoritmo 'dfs) (dfs (list (cria_no estado)) '() (pontos_do_estado estado)))
+      ((eq algoritmo 'a_asterisco) (a_asterisco (list (cria_no estado 0 nil 
+                                                       (heuristica (pontos_do_estado estado) estado))) '() (pontos_do_estado estado)))
+      ((eq algoritmo 'a_asterisco_melhorado) )
       (t NIL)
   )
 )

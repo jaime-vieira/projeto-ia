@@ -101,6 +101,78 @@
   )
 )
 
+;; codigo do mario para ser refactored
+
+
+(defun pontosQueFaltam (objetivo estado)
+  (- objetivo (pontos_do_estado estado))
+)
+
+(defun contarNumerosTabuleiro (tabuleiro)
+  (apply #'+ (mapcar #'(lambda (linha)
+                         (contaNumeros linha)) tabuleiro))
+)
+
+(defun contaNumeros (lista)
+  (cond ((null lista) 0)
+        ((numberp (first lista)) (+ 1 (contaNumeros (rest lista))))
+        (t (contaNumeros (rest lista)))
+  )
+)
+
+
+(defun somaLista (lista)
+  (cond ((null lista) 0)
+        ((numberp (first lista)) (+ (first lista) (somaLista (rest lista)) ))
+        (t (somaLista (rest lista)))
+  )
+)
+
+
+
+(defun somaTabuleiro (tabuleiro)
+  (apply #'+ (mapcar #'(lambda (linha)
+                         (somaLista linha)) tabuleiro))
+)
+
+(defun mediaDePontosPorCasa (estado)
+  (let* ((tabuleiro (tabuleiro_do_estado estado))
+        (soma (somaTabuleiro tabuleiro))
+        (numeroDeCasas (contarNumerosTabuleiro tabuleiro)))
+    (/ soma numeroDeCasas)
+   )
+)
+
+(defun heuristica (objetivo estado)
+  (/ (pontosQueFaltam objetivo estado) (mediaDePontosPorCasa estado))
+)
+
+(defun sortNovosAbertos (lista-de-nos)
+  "Ordena uma lista de nós crescentemente pelo custo"
+  (sort lista-de-nos #'< :key #'custo_do_no)
+)
+
+(defun sucessoresH (no fechados objetivo)
+  (let* ((saltosPossiveis '((1 2) (1 -2) (-1 2) (-1 -2) (2 1) (2 -1) (-2 1) (-2 -1)))
+         (novosEstados (apply #'append 
+             (mapcar #'(lambda (salto)
+                         (cond  ((null (operador (estado_no no) salto)) nil)
+                                (t (list (operador (estado_no no) salto)))
+                          ))
+                    saltosPossiveis)))
+         (novosSucessores (apply #'append 
+             (mapcar #'(lambda (estado)
+                 (list (ver_nos_repetidos (cria_no estado (1+ (profundidade_no no)) no (heuristica objetivo estado)) fechados)))
+                    novosEstados)))
+         )
+          novosSucessores
+          )
+)
+
+
+;; fim codigo
+
+
 ;;;;;;;;;;;;;;;;; BFS ;;;;;;;;;;;;;;;;
 
 
@@ -123,6 +195,7 @@
 
 ;;;;;;;;;;;;;;;;; DFS ;;;;;;;;;;;;;;;;;
 
+
 (defun dfs (abertos fechados objetivo)
   (cond ((null abertos) (falhou))
         (t (let* ((no (first abertos))  
@@ -143,6 +216,21 @@
 ;;;;;;;;;;;;;;;;;; A* ;;;;;;;;;;;;;;; 
 
 
-
-
+(defun aStar (abertos fechados objetivo)
+  "Algoritmo de procura A*"
+  (cond ((null abertos) (fail))
+        (t (let* ((no (first abertos))
+                  (novosFechados (cons no fechados))
+                  (nosSucessores (sucessoresH no fechados objetivo))
+                  (novosAbertos (sortNovosAbertos (append nosSucessores (rest abertos))))
+                  (noObjetivo (devolve_no_objetivo nosSucessores objetivo)))
+             (cond ((null noObjetivo) (aStar novosAbertos novosFechados objetivo))
+                   (t (caminhoObjetivo noObjetivo)
+                    #|(format t "~%~%          Tabuleiro final: ~%~%")(printLists (tabuleiro_do_estado (estado_no noObjetivo)))
+                    (format t "~%~%          Caminho até ao objetivo: ~%~%")(printLists(caminhoObjetivo noObjetivo))|#)
+             )
+            )
+         )
+  )
+)
 

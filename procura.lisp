@@ -101,6 +101,77 @@
   )
 )
 
+;; codigo do mario para ser refactored
+
+
+(defun pontosQueFaltam (objetivo estado)
+  (- objetivo (pontos_do_estado estado))
+)
+
+(defun contarNumerosTabuleiro (tabuleiro)
+  (apply #'+ (mapcar #'(lambda (linha)
+                         (contaNumeros linha)) tabuleiro))
+)
+
+(defun contaNumeros (lista)
+  (cond ((null lista) 0)
+        ((numberp (first lista)) (+ 1 (contaNumeros (rest lista))))
+        (t (contaNumeros (rest lista)))
+  )
+)
+
+
+(defun somaLista (lista)
+  (cond ((null lista) 0)
+        ((numberp (first lista)) (+ (first lista) (somaLista (rest lista)) ))
+        (t (somaLista (rest lista)))
+  )
+)
+
+
+
+(defun somaTabuleiro (tabuleiro)
+  (apply #'+ (mapcar #'(lambda (linha)
+                         (somaLista linha)) tabuleiro))
+)
+
+(defun mediaDePontosPorCasa (estado)
+  (let* ((tabuleiro (tabuleiro_do_estado estado))
+        (soma (somaTabuleiro tabuleiro))
+        (numeroDeCasas (contarNumerosTabuleiro tabuleiro)))
+    (/ soma numeroDeCasas)
+   )
+)
+
+(defun heuristica (objetivo estado)
+  (/ (pontosQueFaltam objetivo estado) (mediaDePontosPorCasa estado))
+)
+
+(defun sortNovosAbertos (lista-de-nos)
+  "Ordena uma lista de nós crescentemente pelo custo"
+  (sort lista-de-nos #'< :key #'custo_do_no)
+)
+
+(defun sucessoresH (no fechados objetivo)
+  (let* ((saltosPossiveis '((1 2) (1 -2) (-1 2) (-1 -2) (2 1) (2 -1) (-2 1) (-2 -1)))
+         (novosEstados (apply #'append 
+             (mapcar #'(lambda (salto)
+                         (cond  ((null (operador (estado_no no) salto)) nil)
+                                (t (list (operador (estado_no no) salto)))
+                          ))
+                    saltosPossiveis)))
+         (novosSucessores (apply #'append 
+             (mapcar #'(lambda (estado)
+                 (list (ver_nos_repetidos (cria_no estado (1+ (profundidade_no no)) no (heuristica objetivo estado)) fechados)))
+                    novosEstados)))
+         )
+          novosSucessores
+          )
+)
+
+
+;; fim codigo
+
 
 ;;;;;;;;;;;;;;;;; BFS ;;;;;;;;;;;;;;;;
 
@@ -114,7 +185,8 @@
                   (no_objetivo (devolve_no_objetivo nos_sucessores objetivo))
                   )
              (cond ((null no_objetivo) (bfs novos_abertos novos_fechados objetivo))
-                   (t (caminho_objetivo no_objetivo))
+                   (t (print_results (caminho_objetivo no_objetivo)
+                                   (tabuleiro_do_estado (estado_no no_objetivo))))
                    )
              )
         )
@@ -134,7 +206,8 @@
                   (no_objetivo (devolve_no_objetivo nos_sucessores objetivo))
                   )
              (cond ((null no_objetivo) (bfs novos_abertos novos_fechados objetivo))
-                   (t (caminho_objetivo no_objetivo))
+                   (t (print_results (caminho_objetivo no_objetivo)
+                                   (tabuleiro_do_estado (estado_no no_objetivo))))
                    )
              )
            )
@@ -145,6 +218,51 @@
 ;;;;;;;;;;;;;;;;;; A* ;;;;;;;;;;;;;;; 
 
 
+(defun a_asterisco (abertos fechados objetivo)
+  "Algoritmo de procura A*"
+  (cond ((null abertos) (falhou))
+        (t (let* ((no (first abertos))
+                  (novosFechados (cons no fechados))
+                  (nosSucessores (sucessoresH no fechados objetivo))
+                  (novosAbertos (sortNovosAbertos (append nosSucessores (rest abertos))))
+                  (noObjetivo (devolve_no_objetivo nosSucessores objetivo)))
+             (cond ((null noObjetivo) (a_asterisco novosAbertos novosFechados objetivo))
+                   (t 
+                    (print_results (caminho_objetivo noObjetivo)
+                                   (tabuleiro_do_estado (estado_no noObjetivo))))
+             )
+            )
+         )
+  )
+)
 
 
 
+;;;;;;;;;;;;;;;;; Auxiliares de Consola ;;;;;;;;;;;;;;;;;
+
+
+
+(defun print_results (caminho_objetivo tabuleiro_objetivo)
+  (format t "~%*******************************~%")
+  (format t "~%********** Resultados **********~%")
+  (format t "~%*******************************~%")
+  (format t "~%  Caminho final:~%~%")
+  (print_list_Caminho caminho_objetivo)
+  (format t "~%~%~%  Tabuleiro final:~%")
+  (print_list_Tabuleiro tabuleiro_objetivo)
+  (format t "~%*******************************~%"))
+
+(defun print_list_Caminho (elements)
+  (cond
+   ((null elements) '()) 
+   (t (format t "  ~a" (car elements))
+      (when (cdr elements)
+        (format t ", "))
+      (print_list_Caminho (cdr elements)))))
+
+(defun print_list_Tabuleiro (elements)
+  (cond
+    ((null elements) '())
+    (t
+      (format t "~%  ~a" (car elements))
+      (print_list_Tabuleiro (cdr elements)))))
