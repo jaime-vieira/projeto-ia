@@ -185,8 +185,11 @@
                   (no_objetivo (devolve_no_objetivo nos_sucessores objetivo))
                   )
              (cond ((null no_objetivo) (bfs novos_abertos novos_fechados objetivo))
-                   (t (print_results (caminho_objetivo no_objetivo)
-                                   (tabuleiro_do_estado (estado_no no_objetivo))))
+                   (t (list no_objetivo (length novos_fechados) (+ (length novos_fechados) (length novos_abertos)) 
+                            (/ (profundidade_no no_objetivo) (+ (length novos_fechados) (length novos_abertos))))
+                    
+                    ;(print_results (caminho_objetivo no_objetivo) (tabuleiro_do_estado (estado_no no_objetivo)))
+                   )
                    )
              )
         )
@@ -206,9 +209,10 @@
                   (no_objetivo (devolve_no_objetivo nos_sucessores objetivo))
                   )
              (cond ((null no_objetivo) (bfs novos_abertos novos_fechados objetivo))
-                   (t (print_results (caminho_objetivo no_objetivo)
-                                   (tabuleiro_do_estado (estado_no no_objetivo))))
+                   (t 
+                    ;(print_results (caminho_objetivo no_objetivo) (tabuleiro_do_estado (estado_no no_objetivo)))
                    )
+             )
              )
            )
   )
@@ -238,31 +242,31 @@
 
 
 
-;;;;;;;;;;;;;;;;; Auxiliares de Consola ;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;; Auxiliares da Consola ;;;;;;;;;;;;;;;;;
 
 
 
 (defun print_results (caminho_objetivo tabuleiro_objetivo)
-  (format t "~%*******************************~%")
   (format t "~%********** Resultados **********~%")
-  (format t "~%*******************************~%")
-  (format t "~%  Caminho final:~%~%")
+  (format t "~%  Caminho final:~%")
   (print_list_Caminho caminho_objetivo)
   (format t "~%~%~%  Tabuleiro final:~%")
   (print_list_Tabuleiro tabuleiro_objetivo)
-  (format t "~%*******************************~%"))
+)
 
 (defun print_list_Caminho (elements)
   (cond
    ((null elements) '()) 
    (t (format t "  ~a" (car elements))
       (when (cdr elements)
-        (format t ", "))
-      (print_list_Caminho (cdr elements)))))
+        (format t ","))
+      (print_list_Caminho (cdr elements))))
+)
 
 (defun print_list_Tabuleiro (elements)
   (cond
     ((null elements) '())
     (t
       (format t "~%  ~a" (car elements))
-      (print_list_Tabuleiro (cdr elements)))))
+      (print_list_Tabuleiro (cdr elements))))
+)

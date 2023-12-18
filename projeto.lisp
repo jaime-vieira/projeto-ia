@@ -100,7 +100,8 @@
               (tabuleiro (cdr (nth problema ficheiro))))
           (cond
            ((movimento_valido_p 0 (1- opcao) tabuleiro)
-            (menu_algoritmos (criar_estado pontos (colocar_cavalo 0 (1- opcao) tabuleiro))) (return-from menu_escolha_casa)
+            ;(menu_algoritmos (criar_estado pontos (colocar_cavalo 0 (1- opcao) tabuleiro))) (return-from menu_escolha_casa)
+            (menu_algoritmos (nth problema ficheiro) (1- opcao)) (return-from menu_escolha_casa)
             ;(format t "~%Escolha certa.~%")
             #|(format t "~{~a~^, ~}~%" tabuleiro)
             (format t "~a ~%" pontos)|#
@@ -118,7 +119,7 @@
 )
 
 
-(defun menu_algoritmos (estado)
+(defun menu_algoritmos (problema casa)
  "Menu de escolha do algoritmo"
  (loop
     (format t "~%Escolha um Algoritmo:~%")
@@ -130,9 +131,9 @@
     (let ((opcao (read)))
      (cond 
       ((not (numberp opcao)) (format t "~%Escolha inválida.~%"))
-      ((= opcao 1) (executar_estatisticas 'bfs estado) (return-from menu_algoritmos))
-      ((= opcao 2) (executar_estatisticas 'dfs estado) (return-from menu_algoritmos))
-      ((= opcao 3) (menu_heuristica estado) (return-from menu_algoritmos))
+      ((= opcao 1) (executar 'bfs problema casa) (return-from menu_algoritmos))
+      ((= opcao 2) (executar 'dfs problema casa) (return-from menu_algoritmos))
+      ((= opcao 3) (menu_heuristica problema casa) (return-from menu_algoritmos))
       ((= opcao 0) (menu_inicial) (return-from menu_algoritmos))
       (t (format t "~%Escolha inválida.~%"))
      )
@@ -140,7 +141,7 @@
  )
 )
 
-(defun menu_heuristica (estado)
+(defun menu_heuristica (problema casa)
  "Menu de escolha da heurística"
  (loop
     (format t "~%Escolha a heurística:~%")
@@ -151,8 +152,8 @@
     (let ((opcao (read)))
      (cond 
       ((not (numberp opcao)) (format t "~%Escolha inválida.~%"))
-      ((= opcao 1) (executar_estatisticas 'a_asterisco estado) (return-from menu_heuristica))
-      ((= opcao 2) (executar_estatisticas 'a_asterisco_melhorado estado) (return-from menu_heuristica))
+      ((= opcao 1) (executar 'a_asterisco problema casa) (return-from menu_heuristica))
+      ((= opcao 2) (executar 'a_asterisco_melhorado problema casa) (return-from menu_heuristica))
       ((= opcao 0) (menu_inicial) (return-from menu_heuristica))
       (t (format t "~%Escolha inválida.~%"))
      )
@@ -161,16 +162,38 @@
 )
 
 
-(defun executar_estatisticas (algoritmo estado)
-  (cond 
-      ((eq algoritmo 'bfs) (bfs (list (cria_no estado)) '() (pontos_do_estado estado)))
-      ((eq algoritmo 'dfs) (dfs (list (cria_no estado)) '() (pontos_do_estado estado)))
-      ((eq algoritmo 'a_asterisco) (a_asterisco (list (cria_no estado 0 nil 
-                                                       (heuristica (pontos_do_estado estado) estado))) '() (pontos_do_estado estado)))
+(defun executar (algoritmo problema casa)
+  (let ((pontos (car problema)) 
+        (tabuleiro (cdr problema)))
+   (cond 
+      ((eq algoritmo 'bfs) (mostrar_estatisticas algoritmo problema (bfs (list (cria_no (criar_estado (celula 0 casa tabuleiro) (colocar_cavalo 0 casa tabuleiro)))) '() pontos)))
+      ((eq algoritmo 'dfs) (mostrar_estatisticas algoritmo problema (dfs (list (cria_no (criar_estado (celula 0 casa tabuleiro) (colocar_cavalo 0 casa tabuleiro)))) '() pontos)))
+      ((eq algoritmo 'a_asterisco) (mostrar_estatisticas algoritmo problema (a_asterisco (list (cria_no (criar_estado (celula 0 casa tabuleiro) (colocar_cavalo 0 casa tabuleiro)) 0 nil (heuristica pontos (criar_estado (celula 0 casa tabuleiro) (colocar_cavalo 0 casa tabuleiro))))) '() pontos)))
       ((eq algoritmo 'a_asterisco_melhorado) )
       (t NIL)
+   )
   )
 )
 
 
-
+(defun mostrar_estatisticas (algoritmo problema estatisticas) 
+  (cond 
+   ((eq estatisticas nil) (format t "~%Objetivo não alcançado."))
+   (t 
+        (format t "~%~%--- Estatísticas ---~% ~%")
+        (format t "~% Algoritmo: ~a ~%" algoritmo)
+        (format t "~% Profundidade: ~a~%" (profundidade_no (first estatisticas)))
+        (format t "~% Tamanho da solução: ~a" (profundidade_no (first estatisticas))) 
+        (format t "~% Nós gerados: ~a" (third estatisticas))
+        (format t "~% Nós expandidos: ~a" (second estatisticas))
+        (format t "~% Penetrância: ~f" (fourth estatisticas))
+        (format t "~% Pontos: ~d" (pontos_do_estado (estado_no (first estatisticas))))
+        (format t "~% Objetivo: ~d" (car problema))
+        ;(format t "~%Average branching factor ~f ~%" () )
+      (cond 
+       ((>= (pontos_do_estado (estado_no (first estatisticas))) (car problema)) (format t "~%~%Objetivo Alcançado"))
+       (T (format t "~%~%Objetivo Não Alcançado"))
+      )
+   )
+  )
+)
