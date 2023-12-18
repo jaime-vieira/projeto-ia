@@ -116,7 +116,7 @@
                    (t (caminho_objetivo no_objetivo))
                    )
              )
-           )
+        )
   )
 )
 

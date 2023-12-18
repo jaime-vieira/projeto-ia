@@ -15,12 +15,6 @@
 )
 
 
-(defun path-solucao ()
-   "Caminho da solução"
-  (let ((ficheiro-path  "D:\\Jaime\\IPS\\Curso\\2023 - 2024\\1º Semestre\\IA\\Projeto\\projeto-ia\\solucao.dat")) ficheiro-path)
-)
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Menus ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -40,8 +34,8 @@
     (format t "~%Escolha um número entre 1 e 2:~%")
     (let ((opcao (read)))
      (cond 
-      ((= opcao 1) (format t "~%A começar o jogo...~%") (menu_escolha_problema))
-      ((= opcao 2) (format t "~%A sair... Até à próxima!~%") (return))
+      ((= opcao 1) (format t "~%A começar o jogo...~%") (menu_escolha_problema) (return-from menu_inicial))
+      ((= opcao 2) (format t "~%A sair... Até à próxima!~%") (return-from menu_inicial))
       (t (format t "~%Escolha inválida. ~%"))
      )
     )
@@ -64,13 +58,13 @@
     (let ((opcao (read)))
      (cond 
       ((not (numberp opcao)) (format t "~%Escolha inválida.~%"))
-      ((= opcao 1) (menu_escolha_casa 0) (return))
-      ((= opcao 2) (menu_escolha_casa 1) (return))
-      ((= opcao 3) (menu_escolha_casa 2) (return))
-      ((= opcao 4) (menu_escolha_casa 3) (return))
-      ((= opcao 5) (menu_escolha_casa 4) (return))
-      ((= opcao 6) (menu_escolha_casa 5) (return))
-      ((= opcao 0) (menu_inicial) (return))
+      ((= opcao 1) (menu_escolha_casa 0) (return-from menu_escolha_problema))
+      ((= opcao 2) (menu_escolha_casa 1) (return-from menu_escolha_problema))
+      ((= opcao 3) (menu_escolha_casa 2) (return-from menu_escolha_problema))
+      ((= opcao 4) (menu_escolha_casa 3) (return-from menu_escolha_problema))
+      ((= opcao 5) (menu_escolha_casa 4) (return-from menu_escolha_problema))
+      ((= opcao 6) (menu_escolha_casa 5) (return-from menu_escolha_problema))
+      ((= opcao 0) (menu_inicial) (return-from menu_escolha_problema))
       (t (format t "~%Escolha inválida.~%"))
      )
    )
@@ -87,97 +81,61 @@
       (cond 
        ((or (not (numberp opcao)) (< opcao 0) (> opcao 10)) (format t "~%Escolha inválida.~%"))
        ((= opcao 0) 
-        (menu_inicial) (return)
+        (menu_inicial) (return-from menu_escolha_casa)
        )
        ((and (>= opcao 1) (<= opcao 10))
-        
-        ;(ler_ficheiro (concatenate 'string (path) "problems.dat"))
-        (let ((pontos (car (car (ler_ficheiro (concatenate 'string (path) "problems.dat"))))) 
-              (tabuleiro (cdr (car (ler_ficheiro (concatenate 'string (path) "problems.dat"))))))
-          (tabuleiro)
+        (let* ((ficheiro (ler_ficheiro (concatenate 'string (path) "problemas.dat")))
+              (pontos (car (nth problema ficheiro))) 
+              (tabuleiro (cdr (nth problema ficheiro))))
+          (cond
+           ((movimento_valido_p 0 (1- opcao) tabuleiro)
+            ;(menu_algoritmos (criar_estado pontos (colocar_cavalo 0 (1- opcao) tabuleiro)))
+            (format t "~%Escolha certa.~%")
+            #|(format t "~{~a~^, ~}~%" tabuleiro)
+            (format t "~a ~%" pontos)|#
+            ;(format t "~{~a~^, ~}~%" (tabuleiro_do_estado (criar_estado pontos (colocar_cavalo 0 (1- opcao) tabuleiro))))
+            ;(format t "~a ~%" (pontos_do_estado (criar_estado pontos (colocar_cavalo 0 (1- opcao) tabuleiro))))
+           )
+           (t (format t "~%Escolha inválida.~%"))
+          )
         )
        )
-       (t (format t "~%Escolha inválida.~%"))
+       (t (format t "~%Valor inválido.~%"))
       )
      )
    )
 )
 
-;;Função tá com erro
+
+(defun menu_algoritmos (estado)
+ "Menu de escolha do algoritmo"
+ (loop
+    (format t "~%Escolha um Algoritmo:~%")
+    (format t "~%1 - BFS")
+    (format t "~%2 - DFS")
+    (format t "~%3 - A*")
+    (format t "~%0 - Menu Inicial")
+    (format t "~%~% Escolha uma opção de 1 a 3:")
+    (let ((opcao (read)))
+     (cond 
+      ((not (numberp opcao)) (format t "~%Escolha inválida.~%"))
+      ((= opcao 1) (menu_escolha_casa 0) (return-from menu_algoritmos))
+      ((= opcao 2) (menu_escolha_casa 1) (return-from menu_algoritmos))
+      ((= opcao 3) (menu_escolha_casa 2) (return-from menu_algoritmos))
+      ((= opcao 0) (menu_inicial) (return-from menu_algoritmos))
+      (t (format t "~%Escolha inválida.~%"))
+     )
+   )
+ )
+)
+
+
+(defun executar_estatisticas (algoritmo problema)
+  
+)
+
+
 #|
-(defun menu_configurar-tabuleiro (problema)
-  "Menu de escolha de posição"
-  (cond
-   ((equal (posicao-cavalo problema) nil )  
-    (loop
-       (pprint  problema)
-       (format t "~%Escolha apenas uma posição com valores da primeira")      
-       (format t "~%linha para o cavalo(0 para Menu Inicial).")
-       (format t "~%-> ")
-      (let ((opcao (read)))
-       (cond 
-        ((or (not (numberp opcao)) (< opcao 0) (> opcao 10))) (format t "~%Escolha inválida.~%"))
-        ((zerop opcao) (menu_inicial))
-        ((= opcao 2) (menu-configurar-tabuleiro problema))
-        (t (format t "~%Escolha inválida.~%"))
-       ))
-      )
-     (cond ((not (let ((escolha (read)))
-                   (cond 
-                    ((and (numberp escolha) (< escolha 10) (> escolha -2)) (cond 
-                                                                            ((eq ( operador-inicial-cavalo problema  escolha) Nil )  (progn nil))
-                                                                            ((= escolha -1) (progn nil))
-                                                                            (t              (progn (menu-algoritmos (operador-inicial-cavalo problema  escolha)) nil ))))
-                    ( T (progn  (format t "~%          Invalid Choice~%~%          Index -> ")
-                          (setf escolha (read)))))))
-            (return)))
-    ))
-   (T (menu-algoritmos problema)))
-
-|#
-
-
-
-
-
-#| Funções do bacano
-
-
-(defun menu-Configurar-tabuleiro (problema)
-  "1.2- Menu para Configurar 0 Tabuleiro"
-  (cond
-   ((equal (posicao-cavalo problema) nil )  
-    (loop
-     (pprint  problema)
-     (progn
-       (format t "~%           ______________________________________________________")      
-       (format t "~%          §                                                      §")
-       (format t "~%          §                   CHOOSE HORSE POSITION              §")
-       (format t "~%          §                IN THE FIRST ROW OF THE BOARD         §")            
-       (format t "~%          §                                                      §")
-       (format t "~%          §                                                      §")
-       (format t "~%          §          choose only the position with values        §")
-       (format t "~%          §            from the first row of the board           §")
-       (format t "~%          §                                                      §")
-       (format t "~%          §                                                      §")
-       (format t "~%          §                ( OR Press  -1  TO EXIT   )           §")
-       (format t "~%          § _____________________________________________________§")
-       (format t "~%~%~%          Index -> ")
-       )
-     (cond ((not (let ((escolha (read)))
-                   (cond 
-                    ((and (numberp escolha) (< escolha 10) (> escolha -2)) (cond 
-                                                                            ((eq ( operador-inicial-cavalo problema  escolha) Nil )  (progn nil))
-                                                                            ((= escolha -1) (progn nil))
-                                                                            (t              (progn (menu-algoritmos (operador-inicial-cavalo problema  escolha)) nil ))))
-                    ( T (progn  (format t "~%          Invalid Choice~%~%          Index -> ")
-                          (setf escolha (read)))))))
-            (return)))))
-   (T (menu-algoritmos  problema))))
-
-
-
-
 (defun menu-algoritmos (problema)
   "1.3 Sub menu escolhe algoritmo "
   (loop
@@ -393,4 +351,4 @@ ________________________________________________________________________________
           collect line)))
 
 ;; Examplo:
-;;(ler_ficheiro (concatenate 'string (path) "problems.dat"))
+;;(ler_ficheiro (concatenate 'string (path) "problemas.dat"))

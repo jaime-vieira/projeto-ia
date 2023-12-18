@@ -101,6 +101,7 @@
   )
 )
 
+
 ;;;;;;;;;;;;;;;;; BFS ;;;;;;;;;;;;;;;;
 
 
@@ -122,6 +123,7 @@
 
 
 ;;;;;;;;;;;;;;;;; DFS ;;;;;;;;;;;;;;;;;
+
 
 (defun dfs (abertos fechados objetivo)
   (cond ((null abertos) (falhou))
